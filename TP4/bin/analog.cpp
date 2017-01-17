@@ -11,7 +11,7 @@ int main(string commandes)
 	//cout<<commandes<<endl;
 	//cout<<"here"<<endl;
 	
-	int begin=0;
+	                int begin=0;
 			begin=commandes.find(" ",begin);
 			while(begin!=-1)
 			{
@@ -29,7 +29,7 @@ int main(string commandes)
 			//cout<<"option"<<option<<endl;
 			//system("pause");
 			/*string suboption1=option.substr(0,2);
-            cout<<"suboption1"<<suboption1<<endl;
+                          cout<<"suboption1"<<suboption1<<endl;
 			system("pause");
 			*/
 			string nomdegraphe;
@@ -71,7 +71,7 @@ int main(string commandes)
 				{
 					if(option.length()==(nomdegraphe.length()+2))
 				    {
-						//CollectionDeLog(nomdeficher,'n',-1, 'g', nomdegraphe);
+						CollectionDeLog collection(nomdeficher,'n',-1, 'g', nomdegraphe);
 					}
 					else
 					{
@@ -84,7 +84,7 @@ int main(string commandes)
 				{
 					if(option.length()==(nomdegraphe.length()+8))
 				    {
-						//CollectionDeLog(nomdeficher, 'e', heure,'g', nomdegraphe);
+						CollectionDeLog collection(nomdeficher, 'e', heure,'g', nomdegraphe);
 					}
 					else
 					{
@@ -99,7 +99,7 @@ int main(string commandes)
 
 					 if(option.length()==(nomdegraphe.length()+4))
 				    {
-						//CollectionDeLog(nomdeficher,'e',-1, 'g', nomdegraphe);
+						CollectionDeLog collection(nomdeficher,'e',-1, 'g', nomdegraphe);
 					}
 					else
 					{
@@ -114,7 +114,7 @@ int main(string commandes)
 				 {
 					  if(option.length()==(nomdegraphe.length()+6))
 				    {
-						//CollectionDeLog(nomdeficher, 'n',heure, 'g', nomdegraphe);
+						CollectionDeLog collection(nomdeficher, 'n',heure, 'g', nomdegraphe);
 					}
 					else
 					{
@@ -129,7 +129,7 @@ int main(string commandes)
 				 {
 					   if(option.length()==6)
 				    {
-						//CollectionDeLog(nomdeficher, 'e',heure);
+						CollectionDeLog collection(nomdeficher, 'e',heure);
 					}
 					else
 					{
@@ -144,7 +144,7 @@ int main(string commandes)
 				 {
 					   if(option.length()==2)
 				    {
-						 //CollectionDeLog(nomdeficher, 'e');
+						 CollectionDeLog collection(nomdeficher, 'e');
 					}
 					else
 					{
@@ -158,7 +158,7 @@ int main(string commandes)
 				 {
 					    if(option.length()==4)
 				    {
-						  //CollectionDeLog(nomdeficher,'n',heure);
+						  CollectionDeLog collection(nomdeficher,'n',heure);
 					}
 					else
 					{
@@ -173,7 +173,7 @@ int main(string commandes)
 
 					    if(option.length()==0)
 				    {
-						  //CollectionDeLog(nomdeficher);
+						  CollectionDeLog collection(nomdeficher);
 					}
 					else
 					{
@@ -194,7 +194,7 @@ int main(string commandes)
 			{
 			string nomdeficher=commandes.substr(9);
 			cout<<"nomdeficher"<<nomdeficher<<endl;
-			//CollectionDeLog(nomdeficher, 'n');
+			CollectionDeLog collection(nomdeficher, 'n');
 			}
 			else
 			{
