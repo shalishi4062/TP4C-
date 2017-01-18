@@ -18,7 +18,6 @@ struct dessin{
     int compteur;
     string cible;
     string referent;
-    dessin(int c=0, string cible =" ", string referent = " ");
 };
 
 typedef map <string,dessin> mapGraph; //cibleref, structure inforamtions
@@ -70,7 +69,7 @@ public:
     // Contrat :char e='n'
     //
 
-    // nom du fichier, exlusion (e ou n), heure (uint ou -1), si topdix (o ou g), nomdugraph
+    // nom du fichier, exlusion (e ou n), heure (uint<12 ou -1), si topdix (o ou g), nomdugraph
     CollectionDeLog (string nf, char e = 'n', int heure = -1, char topdix = 'o', string nfGraph = "unnamed.dot");
 
     virtual ~CollectionDeLog ( );
@@ -82,9 +81,9 @@ public:
 
     void RemplirMapTopDix ();
 
-    void RemplirMapGraph (string nf);
+    void RemplirMapGraph ();
 
-    void AfficherTopDix () ;
+    void AfficherTopDix ();
     void EnregistrerGraph (string nfGraph);
 
 //------------------------------------------------------------------ PRIVE
