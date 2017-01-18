@@ -34,6 +34,8 @@ struct Informations
     string type;
     string status;
     string data;
+    string siteRef;
+    string siteCib;
     string referent;
     string navigateur;
     Informations(string i="", string l="", string na="", string d="", string f="", string r="",string t="",string s="", string da="", string re="", string n=""):ip(i) ,logname(l), name(na), date(d), fuseau(f), requete(r), type(t), status(s), data(da), referent(re), navigateur(n){}
@@ -55,6 +57,12 @@ public:
     string GetType ();
     // Mode d'emploi :
     // Retourne le type de fichier de la cible
+    // Contrat :
+    //
+
+    void splitRefCib();
+    // Mode d'emploi :
+    // Sépare si nécessaire les sites hébergeures des pages des url de cible et de référent
     // Contrat :
     //
 

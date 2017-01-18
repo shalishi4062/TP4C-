@@ -4,5 +4,5 @@
 using namespace std;
 
 int main(){
-    CollectionDeLog collection("anonyme.log",'e', 10, 'g', "court.dot");
+    CollectionDeLog collection("anonyme.log",'e', 14, 'g', "court.dot");
 }

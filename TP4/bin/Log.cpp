@@ -49,6 +49,18 @@ string Log::GetType()
     return res;
 } //----- Fin de GetType
 
+void Log::splitRefCib() {
+    if(cible.find("http://")!=cible.npos) {
+        size_t pos = cible.find(".fr");
+        Infos.siteCib = cible.substr(0,pos+2);
+        cible = cible.substr(pos+3);
+    }
+    if(Infos.referent.find("http://")!= Infos.referent.npos) {
+        size_t pos = Infos.referent.find(".fr");
+        Infos.siteRef = Infos.referent.substr(0, pos+2);
+        Infos.referent = "\""+ Infos.referent.substr(pos+3);
+    }
+}
 //------------------------------------------------- Surcharge d'opérateurs
 //Log & Log::operator = ( const Log & unLog )
 // Algorithme :
@@ -68,7 +80,7 @@ Log::Log ( const Log & unLog )
 } //----- Fin de Log (constructeur de copie)
 
 
-/*Log::Log(string c, Informations i) ( )
+/*Log::Log (string c="", Informations i=Informations()): cible(c), Infos(i)
 // Algorithme :
 //
 {
