@@ -9,7 +9,7 @@ BINDIR = bin
 
 # Noms de fichiers
 LDFLAGS =
-EXEC = run
+EXEC = analog
 SOURCES = $(wildcard $(BINDIR)/*.cpp)
 OBJECTS = $(SOURCES:$(BINDIR)/.cpp=.o)	
 
