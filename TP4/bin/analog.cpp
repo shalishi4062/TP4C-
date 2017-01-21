@@ -19,6 +19,15 @@ int main(int argc,char*argv[])
 			cout<<"The name of source document must be end with \".log\"."<<endl;
 			return 0;
 		}
+		FILE *file = NULL;
+		file = fopen(nomdefichier.c_str(),  "r");
+ 
+		if (file == NULL) {
+		     cout << "le fichier n'existe pas !" << endl;;
+		      return 0;
+		} // si le fichier n'existe pas
+		fclose(file);
+
 		CollectionDeLog collection(nomdefichier, 'n');
 	}//S'il n'y a pas de options,appeler le constructeur sans options
 
@@ -36,6 +45,14 @@ int main(int argc,char*argv[])
 			cout<<"The name of source document must be end with \".log\"."<<endl;
 			return 0;
 		}//Si nomdefichier est pas correct,output erreur.
+		FILE *file = NULL;
+		file = fopen(nomdefichier.c_str(),  "r");
+ 
+		if (file == NULL){
+		      cout << "le fichier n'existe pas !" << endl;
+		      return 0;
+		} // si le fichier n'existe pas
+		fclose(file);
 
 		char option=' ';
 		for(int i=1;i<(argc-1);i++)
