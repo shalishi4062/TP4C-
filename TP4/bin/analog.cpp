@@ -21,7 +21,7 @@ int main(int argc,char*argv[]) {
         file = fopen(nomdefichier.c_str(), "r");
 
         if (file == NULL) {
-            cout << "le fichier n'existe pas !" << endl;;
+            cout << "The file does not exist or you do not have the reading rights on it." << endl;;
             return 0;
         } // si le fichier n'existe pas
         fclose(file);
@@ -45,7 +45,7 @@ int main(int argc,char*argv[]) {
         file = fopen(nomdefichier.c_str(), "r");
 
         if (file == NULL) {
-            cout << "le fichier n'existe pas !" << endl;
+            cout << "The file does not exist or you do not have the reading rights on it." << endl;
             return 0;
         } // si le fichier n'existe pas
         fclose(file);
@@ -71,7 +71,7 @@ int main(int argc,char*argv[]) {
                     }
                     heure = stoi(heures);
                     if (heure >= 24 || heure < 0) {
-                        cout << "Invalid time!" << endl;
+                        cout << "Invalid time ! " << endl;
                         return 0;
                     }
                     i++;//i plus 1 ,pour obtenir la prochaine option
