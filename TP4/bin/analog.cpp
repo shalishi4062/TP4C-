@@ -85,7 +85,7 @@ int main(int argc,char*argv[]) {
                 case ('g'): {
                     nomdegraphe = argv[i + 1];
                     if (nomdegraphe.find(".dot") == nomdegraphe.npos) {
-                        cout << "Name of the GraphViz file must be end with\".dot\"." << endl;
+                        cout << "Name of the GraphViz file invalid." << endl;
                         return 0;
                     }//garder le nom de graphe ,output erreur quand il na pas de forme correcte
                     gflag = 1;//mettre gflag a 1;
