@@ -46,7 +46,7 @@ int main(int argc,char*argv[])
 			return 0;
 		}//Si nomdefichier est pas correct,output erreur.
 		FILE *file = NULL;
-		file = fopen(nomdefichier.c_str(),  "r");
+		file = fopen(nomdefichier.c_str(),  "r"); //ouverture en lecture
  
 		if (file == NULL){
 		      cout << "le fichier n'existe pas !" << endl;
@@ -57,9 +57,10 @@ int main(int argc,char*argv[])
 		char option=' ';
 		for(int i=1;i<(argc-1);i++)
 		{
-			if (strcmp(argv[i],"-t")==0){option='t';}
-			if (strcmp(argv[i],"-e")==0){option='e';}
-			if (strcmp(argv[i],"-g")==0){option='g';}
+			
+			if (argv[i][0]!='-'){cout<<"argument should start with '-'"<<endl;return 0;} //s'il manque le -
+			if (argv[i][2]!='\0'){cout<<"argument should be only one character"<<endl;return 0;} // si l'argument a plus d'une lettre 
+			option = argv[i][1]; // option prend la valeur de l'option
 			switch(option)
 			{
 			case('t'):{
