@@ -66,7 +66,7 @@ int main(int argc,char*argv[]) {
 
                     string heures = argv[i + 1];
                     if(!isdigit(heures[0])){
-                        cout << "You must precise the hour with command -h." <<endl;
+                        cout << "You must precise the hour with command -t." <<endl;
                         return 0;
                     }
                     heure = stoi(heures);
