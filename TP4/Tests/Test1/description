@@ -1,1 +1,1 @@
-Ce test permet de vérifier la production d'un fichier en sortie du programme testé
+Ce test permet de tester s'il y a bien une erreur si aucun argument n'est entré.
