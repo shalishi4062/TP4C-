@@ -29,8 +29,8 @@ const char SEP = ' ';
 
 //----------------------------------------------------- Méthodes publiques
 int Log::GetHeure()
+// Méthode qui renvoie l'heure de connexion à la page cible
 // Algorithme :
-//
 {   string date = Infos.date;
     size_t pos = date.find_first_of(':');
     string res = "";
@@ -40,8 +40,8 @@ int Log::GetHeure()
 } //----- Fin de GetHeure
 
 string Log::GetType()
+// Méthode qui renvoie le type (HTML, CSS, JPG, etc.) du fichier ciblé
 // Algortihme :
-//
 {   string c = cible;
     size_t pos = c.find_first_of('.');
     string res;
@@ -82,12 +82,13 @@ Log::Log ( const Log & unLog )
 
 /*Log::Log (string c="", Informations i=Informations()): cible(c), Infos(i)
 // Algorithme :
-//
+// * Constructeur inutile ici *
 {
 #ifdef MAP
     cout << "Appel au constructeur de <Log>" << endl;
 #endif
 } //----- Fin de Log*/
+
 
 
 Log::~Log ( )

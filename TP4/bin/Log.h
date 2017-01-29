@@ -62,7 +62,7 @@ public:
 
     void splitRefCib();
     // Mode d'emploi :
-    // Sépare si nécessaire les sites hébergeures des pages des url de cible et de référent
+    // Sépare si nécessaire les sites hébergeurs des pages des url de cible et de référent
     // Contrat :
     //
 
@@ -111,8 +111,8 @@ private:
     string cible;
     Informations Infos;
 //---------------------------------------------------------- Classes amies
-    friend istream & operator >> (istream& is, Log& f);
-    friend ostream & operator << (ostream& os, Log& f);
+    friend istream & operator >> (istream& is, Log& f); //Surcharge entrée
+    friend ostream & operator << (ostream& os, Log& f); //Surcharge sortie
     friend class CollectionDeLog;
 //-------------------------------------------------------- Classes privées
 
