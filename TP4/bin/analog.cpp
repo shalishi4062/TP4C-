@@ -14,14 +14,14 @@ int main(int argc,char*argv[]) {
 	if (argc == 2) {
 		nomdefichier = argv[1];
 		if (nomdefichier.find(".log") == nomdefichier.npos) {
-			cerr << "The name of source document must be end with \".log\"." << endl;
+			cerr << "Le nom du fichier doit se finir par \".log\"." << endl;
 			return 2;
 		}
 		FILE *file = NULL;
 		file = fopen(nomdefichier.c_str(), "r");
 
 		if (file == NULL) {
-			cerr << "The file does not exist or you do not have the reading rights on it." << endl;;
+			cerr << "Le fichier n'existe pas ou vous n'avez pas les droits en lecture dessus." << endl;;
 			return 3;
 		} // si le fichier n'existe pas
 		fclose(file);
@@ -30,7 +30,7 @@ int main(int argc,char*argv[]) {
 	}//S'il n'y a pas d' options, appeler le constructeur sans options
 
 	if (argc <= 1) {
-		cerr << "input some argument" << endl;
+		cerr << "Entrez des arguments" << endl;
 		return 1;
 	}//Si aucun argument n'est entre
 
@@ -38,14 +38,14 @@ int main(int argc,char*argv[]) {
 		nomdefichier = argv[argc - 1];
 
 		if (nomdefichier.find(".log") == nomdefichier.npos) {
-			cerr << "The name of source document must be end with \".log\"." << endl;
+			cerr << "Le nom du fichier doit se finir par \".log\"." << endl;
 			return 2;
 		}//Si nomdefichier est pas correct,output erreur.
 		FILE *file = NULL;
 		file = fopen(nomdefichier.c_str(), "r");
 
 		if (file == NULL) {
-			cerr << "The file does not exist or you do not have the reading rights on it." << endl;
+			cerr << "Le fichier n'existe pas ou vous n'avez pas les droits en lecture dessus." << endl;
 			return 3;
 		} // si le fichier n'existe pas
 		fclose(file);
@@ -53,11 +53,11 @@ int main(int argc,char*argv[]) {
 		char option = ' ';
 		for (int i = 1; i < (argc - 1); i++) {
 			if (argv[i][0] != '-') {
-				cerr << "argument should start with '-'" << endl;
+				cerr << "Un argument doit commencer par '-'." << endl;
 				return 4;
 			} //s'il manque le -
 			if (argv[i][2] != '\0') {
-				cerr << "argument should be only one character" << endl;
+				cerr << "Un argument ne doit faire que 1 caractere." << endl;
 				return 4;
 			} // si l'argument a plus d'une lettre
 			option = argv[i][1]; // option prend la valeur de l'option
@@ -65,18 +65,18 @@ int main(int argc,char*argv[]) {
 			case ('t'): {
                                 if(tflag==1) 
 				{
-					cout << "You already wrote the -t argument" << endl;
+					cout << "Ecriture double de l'argument -t !" << endl;
 					return 6;
 				}
 				string heures = argv[i + 1];
 				if(!isdigit(heures[0])){
-					cerr << "You must precise the hour with command -t." <<endl;
+					cerr << "Precisez l'heure en chiffre apres l'argument -t." <<endl;
 					return 5;
 				}
 				heure = stoi(heures);
 				if (heure >= 24 || heure < 0) {
-					cerr << "Invalid time ! " << endl;
-					return 5;
+					cerr << "Heure invalide ! " << endl;
+					return 7;
 				}
 				i++;//i plus 1 ,pour obtenir la prochaine option
 				
@@ -86,7 +86,7 @@ int main(int argc,char*argv[]) {
 			case ('e'): {
 				  if(eflag==1) 
 				{
-					cout << "You already wrote the -e argument" << endl;
+					cout << "Ecriture double de l'argument -e !" << endl;
 					return 6;
 				}
 				eflag = 1;//mettre eflag a 1;
@@ -95,12 +95,12 @@ int main(int argc,char*argv[]) {
 			case ('g'): {
 				  if(gflag==1) 
 				{
-					cout << "You already wrote the -g argument" << endl;
+					cout << "Ecriture double de l'argument -g !" << endl;
 					return 6;
 				}
 				nomdegraphe = argv[i + 1];
 				if (nomdegraphe.find(".dot") == nomdegraphe.npos) {
-					cerr << "Name of the GraphViz file must be end with\".dot\"." << endl;
+					cerr << "Le nom du fichier GraphViz doit finir par \".dot\"." << endl;
 					return 5;
 				}//erreur quand il n a pas de forme correcte
 
@@ -122,7 +122,7 @@ int main(int argc,char*argv[]) {
 							cout << "Entrez le nouveau nom" << endl;
 							cin >> nomdegraphe;
 							if (nomdegraphe.find(".dot") == nomdegraphe.npos) {
-								cerr << "Name of the GraphViz file must be end with\".dot\"." << endl;
+								cerr << "Le nom du fichier GraphViz doit finir par \".dot\"." << endl;
 								return 5;
 							}//erreur quand il n a pas de forme correcte
 
@@ -138,7 +138,7 @@ int main(int argc,char*argv[]) {
 				break;
 			}
 			default: {
-				cout << "Wrong command" << endl; //a part les symboles corrects,les autres sont tous fauts
+				cout << "Mauvais argument" << endl; //a part les symboles corrects,les autres sont tous fauts
 			return 7;				
 			}
 
