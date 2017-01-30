@@ -2,8 +2,9 @@
                            Log  -  Classe Log
                              -------------------
     début                : 10/01/2017
-    copyright            : (C) $2017$ par $Julien Charles-Nicolas$
-    e-mail               : $julien.charles-nicolas@insa-lyon.fr$
+    copyright            : (C) $2017$ par $Julien Charles-Nicolas,
+                                           Shali Shi,
+                                           Fatima-Ezzahra Mezidi$
 *************************************************************************/
 
 //---------- Réalisation de la classe <Log> (Log Log.cpp) ------------
