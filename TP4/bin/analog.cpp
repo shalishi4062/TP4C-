@@ -75,10 +75,12 @@ int main(int argc,char*argv[]) {
 					return 0;
 				}
 				i++;//i plus 1 ,pour obtenir la prochaine option
+				if(tflag==1) cout << "Warning : you already wrote the -t argument" << endl;
 				tflag = 1;//mettre tflag a 1;
 				break;
 			}
 			case ('e'): {
+				if(eflag==1) cout << "Warning : you already wrote the -e argument" << endl;
 				eflag = 1;//mettre eflag a 1;
 				break;
 			}
