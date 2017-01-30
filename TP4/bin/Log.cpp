@@ -1,9 +1,9 @@
 /*************************************************************************
-                           Log  -  description
+                           Log  -  Classe Log
                              -------------------
-    début                : $DATE$
-    copyright            : (C) $YEAR$ par $AUTHOR$
-    e-mail               : $EMAIL$
+    début                : 10/01/2017
+    copyright            : (C) $2017$ par $Julien Charles-Nicolas$
+    e-mail               : $julien.charles-nicolas@insa-lyon.fr$
 *************************************************************************/
 
 //---------- Réalisation de la classe <Log> (Log Log.cpp) ------------
