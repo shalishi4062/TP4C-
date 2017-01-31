@@ -1,5 +1,5 @@
 /*************************************************************************
-                           CollectionDeLog  -  description
+                           CollectionDeLog  -  classe CollectionDeLog
                              -------------------
     début                : ??/??/2017
     copyright            : (C) 2017 par Julien Charles-Nicolas,
