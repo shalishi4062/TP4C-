@@ -65,7 +65,7 @@ int main(int argc,char*argv[]) {
 			case ('t'): {
                                 if(tflag==1) 
 				{
-					cout << "Ecriture double de l'argument -t !" << endl;
+					cerr << "Ecriture double de l'argument -t !" << endl;
 					return 6;
 				}
 				string heures = argv[i + 1];
@@ -86,7 +86,7 @@ int main(int argc,char*argv[]) {
 			case ('e'): {
 				  if(eflag==1) 
 				{
-					cout << "Ecriture double de l'argument -e !" << endl;
+					cerr << "Ecriture double de l'argument -e !" << endl;
 					return 6;
 				}
 				eflag = 1;//mettre eflag a 1;
@@ -95,7 +95,7 @@ int main(int argc,char*argv[]) {
 			case ('g'): {
 				  if(gflag==1) 
 				{
-					cout << "Ecriture double de l'argument -g !" << endl;
+					cerr << "Ecriture double de l'argument -g !" << endl;
 					return 6;
 				}
 				nomdegraphe = argv[i + 1];
@@ -138,7 +138,7 @@ int main(int argc,char*argv[]) {
 				break;
 			}
 			default: {
-				cout << "Mauvais argument" << endl; //a part les symboles corrects,les autres sont tous fauts
+				cerr << "Mauvais argument" << endl; //a part les symboles corrects,les autres sont tous fauts
 			return 7;				
 			}
 
