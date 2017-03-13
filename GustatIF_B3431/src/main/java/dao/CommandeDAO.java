@@ -47,6 +47,19 @@ public class CommandeDAO {
         return commandes;
     }
     
+    public List<Commande> findAllByClientID(long id) throws Exception{
+        EntityManager em = JpaUtil.obtenirEntityManager();
+        List<Commande> commandes = null;
+        try {
+            Query q = em.createQuery("SELECT co FROM Commande co WHERE co.CLIENT_ID ="+id);
+            commandes = (List<Commande>) q.getResultList();
+        }
+        catch(Exception e) {
+            throw e;
+        }
+        return commandes;
+    }
+    
     public void consultList() throws Exception {
         List<Commande> commandes = findAll();
         System.out.println("Liste des Commandes : ");

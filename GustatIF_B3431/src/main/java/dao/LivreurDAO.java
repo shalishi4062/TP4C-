@@ -15,6 +15,7 @@ public class LivreurDAO {
     public void create(Livreur livreur) throws Exception {
         EntityManager em = JpaUtil.obtenirEntityManager();
         try {
+            System.out.println(livreur);
             em.persist(livreur);
         }
         catch(Exception e) {
