@@ -5,7 +5,6 @@
  */
 package metier.modele;
 
-import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 
@@ -14,7 +13,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
  * @author jcharlesni
  */
 @Entity
-public class LivreurHumain extends Livreur implements Serializable{
+public class LivreurHumain extends Livreur{
     
     private String nom;
     private String prenom;

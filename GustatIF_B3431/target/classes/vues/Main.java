@@ -38,20 +38,16 @@ public class Main {
         CommandeDAO codao = new CommandeDAO();
         LivreurDAO ldao = new LivreurDAO();
         
-        try {
-            LivreurHumain livreur = new LivreurHumain("14 Avenue Albert Einstein 69100", 1400.0, 5843.0, 20.0, true,"Travolta", "John", "john.travolta@gustatif.fr");
+        try { 
+            Client client = cdao.findById(1100);
+            Livreur livreur = new LivreurHumain("14 Avenue Albert Einstein 69100", 1400.0, 5843.0, 20.0, true,"Travolta", "John", "john.travolta@gustatif.fr");
             Date date = null;
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
             String dateN = "15-11-96";
             date = dateFormat.parse(dateN);
-           
-           JpaUtil.ouvrirTransaction();
-            //ldao.create(livreur);
-            Client client = cdao.findById(124);
             Commande c = new Commande(client,livreur, date );
+            ldao.create(livreur);
             codao.create(c);
-            JpaUtil.validerTransaction(); 
-            //
            // System.out.println(codao.findAllByClientID(1100));
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
