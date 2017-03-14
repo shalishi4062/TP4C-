@@ -39,7 +39,7 @@ public class Main {
         LivreurDAO ldao = new LivreurDAO();
         
         try {
-            LivreurHumain livreur = new LivreurHumain("14 Avenue Albert Einstein 69100", 1400.0, 5843.0, 20.0, true,"Travolta", "John", "john.travolta@gustatif.fr");
+            Livreur livreur = ldao.findById(1);
             Date date = null;
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
             String dateN = "15-11-96";
