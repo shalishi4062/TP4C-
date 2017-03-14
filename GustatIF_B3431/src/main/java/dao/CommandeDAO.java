@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import metier.modele.Commande;
+import metier.modele.Qte_Commande;
 
 public class CommandeDAO {
     
@@ -20,6 +21,39 @@ public class CommandeDAO {
         catch(Exception e) {
             throw e;
         }
+    }
+    
+    public void update(Commande commande) throws Exception {
+        EntityManager em = JpaUtil.obtenirEntityManager();
+        try {
+            em.merge(commande);
+        }
+        catch(Exception e) {
+            throw e;
+        }
+    }
+    
+    
+    public void deleteById(long id) throws Exception{
+        
+    }
+    
+    public void cancelById(long id) throws Exception{
+        
+    }
+    
+    public String getProduitsCommandeById(long id) throws Exception{
+        String res="Produits commandés : \n";
+        double prix = 0;
+        Commande commande = findById(id);
+        List<Qte_Commande> produits = commande.getQteProduit();
+        for(int i=0; i<produits.size(); i++){
+            Qte_Commande q = produits.get(i);
+            res += q.getQuantite() + " x " + q.getProduit().getDenomination() + "au prix unitaire de " + q.getProduit().getPrix() + "\n";
+            prix +=  q.getQuantite()* q.getProduit().getPrix();
+        }
+        res += "Prix total : "+ prix;
+        return res;
     }
     
     public Commande findById(long id) throws Exception {
@@ -51,7 +85,8 @@ public class CommandeDAO {
         EntityManager em = JpaUtil.obtenirEntityManager();
         List<Commande> commandes = null;
         try {
-            Query q = em.createQuery("SELECT co FROM Commande co WHERE co.CLIENT_ID ="+id);
+            Query q = em.createQuery("SELECT co FROM Commande co WHERE co.CLIENT_ID = :id");
+            q.setParameter("id", id);
             commandes = (List<Commande>) q.getResultList();
         }
         catch(Exception e) {

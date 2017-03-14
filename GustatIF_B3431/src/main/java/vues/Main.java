@@ -10,6 +10,7 @@ import dao.CommandeDAO;
 import dao.JpaUtil;
 import dao.LivreurDAO;
 import dao.ProduitDAO;
+import dao.Qte_CommandeDAO;
 import dao.RestaurantDAO;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import metier.modele.Commande;
 import metier.modele.Livreur;
 import metier.modele.LivreurHumain;
 import metier.modele.Produit;
+import metier.modele.Qte_Commande;
 import metier.modele.Restaurant;
 
 /**
@@ -37,21 +39,13 @@ public class Main {
         ClientDAO cdao = new ClientDAO();
         CommandeDAO codao = new CommandeDAO();
         LivreurDAO ldao = new LivreurDAO();
-        
+        ProduitDAO pdao = new ProduitDAO();
+        Qte_CommandeDAO qdao = new Qte_CommandeDAO();
         try {
-            Livreur livreur = ldao.findById(1);
-            Date date = null;
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
-            String dateN = "15-11-96";
-            date = dateFormat.parse(dateN);
-           
-           JpaUtil.ouvrirTransaction();
-            //ldao.create(livreur);
-            Client client = cdao.findById(124);
-            Commande c = new Commande(client,livreur, date );
-            codao.create(c);
-            JpaUtil.validerTransaction(); 
-            //
+            JpaUtil.ouvrirTransaction();
+            Commande c = codao.findById(1201);
+            JpaUtil.validerTransaction();
+            System.out.println(codao.getProduitsCommandeById(c.getID()));
            // System.out.println(codao.findAllByClientID(1100));
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
