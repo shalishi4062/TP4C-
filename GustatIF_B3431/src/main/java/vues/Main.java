@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package vues;
+package vue;
 
 import dao.ClientDAO;
 import dao.CommandeDAO;
@@ -25,6 +25,7 @@ import metier.modele.LivreurHumain;
 import metier.modele.Produit;
 import metier.modele.Qte_Commande;
 import metier.modele.Restaurant;
+import static metier.service.ServiceMetier.*;
 
 /**
  *
@@ -34,30 +35,18 @@ public class Main {
     
     public static void main(String[] args){
         
-        JpaUtil.init();
-        JpaUtil.creerEntityManager();
-        ClientDAO cdao = new ClientDAO();
-        CommandeDAO codao = new CommandeDAO();
-        LivreurDAO ldao = new LivreurDAO();
-        ProduitDAO pdao = new ProduitDAO();
-        Qte_CommandeDAO qdao = new Qte_CommandeDAO();
-        try {
-            JpaUtil.ouvrirTransaction();
-            Commande c = codao.findById(1201);
-            JpaUtil.validerTransaction();
-            System.out.println(codao.getProduitsCommandeById(c.getID()));
-           // System.out.println(codao.findAllByClientID(1100));
-        } catch (Exception ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        // signUpClient("Shi", "Shali", "shalishi@gmail.com", "20 avenue Albert Einstein 69100 Villeurbanne");
+        //Client c = singInClient("shalishi@gmail.com");
+        List <Restaurant> rs = consultListRestaurant();
+        List<Produit> rp =null ;
+         System.out.println("Liste des restaurants : ");
+        for(int i=0; i<rs.size(); i++){
+            System.out.println(rs.get(i).toString());
         }
-                 
-        
-        
-    
-        JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
-        
-        
+        rp=consultListProduit(rs.get(rs.size()-1).getId()); 
+          System.out.println("Liste des produits : ");
+        for(int i=0; i<rp.size(); i++){
+            System.out.println(rp.get(i).toString());
+        }
     }
-    
 }
