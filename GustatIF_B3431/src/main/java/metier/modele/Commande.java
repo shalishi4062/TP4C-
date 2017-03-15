@@ -42,6 +42,8 @@ public class Commande implements Serializable{
     @OneToMany(mappedBy="commande")
     List<Qte_Commande> qte_commande;
     
+    private String etat;
+    
     protected Commande() {
     }
     
@@ -50,6 +52,7 @@ public class Commande implements Serializable{
         client = c;
         livreur = l;
         qte_commande = new ArrayList();
+        etat = "En attente";
     }
 
     
@@ -73,6 +76,14 @@ public class Commande implements Serializable{
         client = c;
     }
     
+    public Date getDate(){
+        return date;
+    }
+    
+    public void setDate(Date d){
+        date = d;
+    }
+    
     public void setLivreur(Livreur l){
         livreur = l;
     }
@@ -81,9 +92,50 @@ public class Commande implements Serializable{
         qte_commande.add(qP);
     }
     
+    public String getEtat(){
+        return etat;
+    }
+    
+    public void setEtat(int n){
+        switch (n){
+            case 0 : etat = "En attente";
+                    break;
+            case 1 : etat = "En cours";
+                    break;
+            case 2 : etat = "Finie";
+                    break;
+            case 3 : etat = "Annulée";
+                    break;
+            default : System.out.println("Entrez 0, 1, 2, ou 3");
+                    break; 
+        }
+    }
+    
+    public String getProduitsCommande(){
+        String res="Produits commandés : \n";
+        double prix = 0;
+        List<Qte_Commande> produits = getQteProduit();
+        for(int i=0; i<produits.size(); i++){
+            Qte_Commande q = produits.get(i);
+            res += q.getQuantite() + " x " + q.getProduit().getDenomination() + " au prix unitaire de " + q.getProduit().getPrix() + "\n";
+            prix +=  q.getQuantite()* q.getProduit().getPrix();
+        }
+        res += "Prix total : "+ prix;
+        return res;
+    }
+    
+    public double getPoidsTotal(){
+        double res = 0.0;
+        List<Qte_Commande> produits = getQteProduit();
+        for(int i=0; i<produits.size(); i++){
+            Qte_Commande q = produits.get(i);
+            res +=  q.getQuantite()* q.getProduit().getPoids();
+        }
+        return res;
+    }
+    
     public String toString(){
         return "Commande n°"+id+" du client "+ client.getId()+
                 " effectuée par le livreur "+ livreur.getId() + " le "+ date;
     }
-    
 }

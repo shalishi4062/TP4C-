@@ -24,8 +24,8 @@ public class LivreurHumain extends Livreur implements Serializable{
         
     }
     
-    public LivreurHumain(String a, Double lon, Double lat, Double c, boolean d, String n, String p, String m) {
-        super(a, lon, lat, c, d);
+    public LivreurHumain(String a, Double c, boolean d, String n, String p, String m) {
+        super(a, c, d);
         nom = n;
         prenom = p;
         mail = m;
@@ -56,6 +56,6 @@ public class LivreurHumain extends Livreur implements Serializable{
     }
     
     public String toString(){
-         return "Livreur :{" + "id=" + id + ", nom="+ nom + ", prenom="+ prenom + ", mail=" + mail + ", adresse=" + adresse + ", longitude=" + longitude + ", latitude=" + latitude + ", capacité="+ capacite + ", disponibilité="+ disponibilite  +'}';
+         return "Livreur :{" + "id=" + id + ", nom="+ nom + ", prenom="+ prenom + ", mail=" + mail + ", adresse=" + adresse + ", capacité="+ capacite + ", disponibilité="+ disponibilite  +'}';
      }
 }

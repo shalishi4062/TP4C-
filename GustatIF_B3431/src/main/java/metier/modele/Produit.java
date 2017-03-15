@@ -20,8 +20,7 @@ public class Produit implements Serializable {
     private Double poids;
     private Double prix;
     
-    @ManyToOne
-    private Restaurant restaurant;
+    
     
     @OneToMany(mappedBy="produit")
     List<Qte_Commande> qte_commandes;
