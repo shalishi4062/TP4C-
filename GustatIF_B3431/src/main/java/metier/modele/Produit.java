@@ -21,6 +21,7 @@ public class Produit implements Serializable {
     private Double prix;
     
     
+    
     @OneToMany(mappedBy="produit")
     List<Qte_Commande> qte_commandes;
 

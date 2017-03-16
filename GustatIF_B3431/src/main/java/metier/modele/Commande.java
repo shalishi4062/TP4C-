@@ -44,14 +44,18 @@ public class Commande implements Serializable{
     @OneToMany(mappedBy="commande")
     List<Qte_Commande> qte_commande;
     
+    private String etat;
+    
     protected Commande() {
     }
     
-    public Commande(Client c, Livreur l, Date d){
+    public Commande(Client c, Date d){
         dateDeb = d;
         client = c;
-        livreur = l;
+        livreur = null;
         qte_commande = new ArrayList();
+        etat = "En attente";
+        dateFin = null;
     }
 
     
@@ -67,14 +71,6 @@ public class Commande implements Serializable{
         return livreur;
     }
     
-    public Date getdateDeb(){
-        return dateDeb;
-    }
-    
-    public Date getdateFin(){
-        return dateFin;
-    }
-    
     public List<Qte_Commande> getQteProduit(){
         return qte_commande;
     }
@@ -83,21 +79,76 @@ public class Commande implements Serializable{
         client = c;
     }
     
-    public void setLivreur(Livreur l){
-        livreur = l;
+    public Date getDateDeb(){
+        return dateDeb;
     }
     
-     public void setdateFin(Date d){
+    public Date getdateFin(){
+        return dateFin;
+    }
+    
+    
+    
+    public void setDateDeb(Date d){
+        dateDeb = d;
+    }
+    
+    public void setdateFin(Date d){
         dateFin = d;
+    }
+    
+    public void setLivreur(Livreur l){
+        livreur = l;
     }
     
     public void addQteProduit(Qte_Commande qP){
         qte_commande.add(qP);
     }
     
+    public String getEtat(){
+        return etat;
+    }
+    
+    public void setEtat(int n){
+        switch (n){
+            case 0 : etat = "En attente";
+                    break;
+            case 1 : etat = "En cours";
+                    break;
+            case 2 : etat = "Finie";
+                    break;
+            case 3 : etat = "Annulée";
+                    break;
+            default : System.out.println("Entrez 0, 1, 2, ou 3");
+                    break; 
+        }
+    }
+    
+    public String getProduitsCommande(){
+        String res="Produits commandés : \n";
+        double prix = 0;
+        List<Qte_Commande> produits = getQteProduit();
+        for(int i=0; i<produits.size(); i++){
+            Qte_Commande q = produits.get(i);
+            res += q.getQuantite() + " x " + q.getProduit().getDenomination() + " au prix unitaire de " + q.getProduit().getPrix() + "\n";
+            prix +=  q.getQuantite()* q.getProduit().getPrix();
+        }
+        res += "Prix total : "+ prix;
+        return res;
+    }
+    
+    public double getPoidsTotal(){
+        double res = 0.0;
+        List<Qte_Commande> produits = getQteProduit();
+        for(int i=0; i<produits.size(); i++){
+            Qte_Commande q = produits.get(i);
+            res +=  q.getQuantite()* q.getProduit().getPoids();
+        }
+        return res;
+    }
+    
     public String toString(){
         return "Commande n°"+id+" du client "+ client.getId()+
                 " effectuée par le livreur "+ livreur.getId() + " le "+ dateDeb;
     }
-    
 }

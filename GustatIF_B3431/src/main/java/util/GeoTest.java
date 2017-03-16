@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class GeoTest {
 
-    final static String MA_CLÉ_GOOGLE_API = "XXXXXXXX-Moodle-Clé";
+    final static String MA_CLÉ_GOOGLE_API = "AIzaSyDcVVJjfmxsNdbdUYeg9MjQoJJ6THPuap4";
 
     final static GeoApiContext MON_CONTEXTE_GEOAPI = new GeoApiContext().setApiKey(MA_CLÉ_GOOGLE_API);
 
