@@ -29,7 +29,6 @@ public class RestaurantDAO {
         catch(Exception e) {
             throw e;
         }
-        
         return restaurants;
     }
     

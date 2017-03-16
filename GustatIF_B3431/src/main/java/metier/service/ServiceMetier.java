@@ -5,28 +5,22 @@
  */
 package metier.service;
 
+import com.google.maps.model.LatLng;
 import dao.ClientDAO;
-import dao.CommandeDAO;
 import dao.JpaUtil;
 import dao.LivreurDAO;
-import dao.ProduitDAO;
-import dao.Qte_CommandeDAO;
 import dao.RestaurantDAO;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import metier.modele.Client;
 import metier.modele.Commande;
 import metier.modele.Livreur;
-import metier.modele.LivreurHumain;
 import metier.modele.Produit;
-import metier.modele.Qte_Commande;
 import metier.modele.Restaurant;
-import util.GeoTest;
+import static util.GeoTest.getLatLng;
 
 /**
  *
@@ -34,51 +28,102 @@ import util.GeoTest;
  */
 public class ServiceMetier {
     
-    ClientDAO cdao = new ClientDAO();
-    CommandeDAO codao = new CommandeDAO();
-    LivreurDAO ldao = new LivreurDAO();
-    ProduitDAO pdao = new ProduitDAO();
-    Qte_CommandeDAO qdao = new Qte_CommandeDAO();
-    RestaurantDAO rdao = new RestaurantDAO();
-    ServiceTechnique stechnique = new ServiceTechnique();
-    Scanner clavier = new Scanner(System.in);
-    
-    
-    
-    public void createCommande(Client client){
+    public static void signUpClient(String nom, String prenom, String numero, String mail, String adresse) {
+        
+        LatLng latlong = getLatLng(adresse);
+        
         JpaUtil.init();
         JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
+        ClientDAO cdao = new ClientDAO();
+        Client cl = new Client(nom, prenom, numero, mail, adresse);
         try {
-            int x = 2;
-            List<Restaurant> restaurants = rdao.findAll();
-            Restaurant restaurant = stechnique.selectRestaurant(restaurants);
-            Date date = stechnique.selectDate();
-            Livreur livreur = stechnique.findLivreur(client.getAdresse(),restaurant, date );
-            Commande commande = new Commande(client, livreur, date);
-            while(x!=0){
-               Qte_Commande qcommande = stechnique.selectProduit(restaurant, commande);
-               commande.addQteProduit(qcommande);
-               System.out.println("Souhaitez vous un autre produit(1) ou ce sera tout(0) ? #Tapez le chiffre entre parenthèse lié à votre choix");
-               x = clavier.nextInt();
-            }
-            codao.create(commande);
-            if(commande.getPoidsTotal()>livreur.getCapacite()){
-                livreur = stechnique.selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
-            }
-            System.out.println("Votre commande : \n"+commande.getProduitsCommande()+ "\n a été confirmée et créee.");
-            Date now = new Date();
-            if(now.after(commande.getDate())){
-                commande.setEtat(1);
-            }
-            //Envoyer Mails
-            codao.update(commande);
+            JpaUtil.ouvrirTransaction();
+            cdao.create(cl);
+            JpaUtil.validerTransaction();
+            ServiceTechnique.envoiMailInscription(1,cl);
         } catch (Exception ex) {
             Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+            ServiceTechnique.envoiMailInscription(0,cl);
         }
-        JpaUtil.validerTransaction();
         JpaUtil.fermerEntityManager();
         JpaUtil.destroy();
     }
     
+    public static Client singInClient(String mail){
+        JpaUtil.init();
+        JpaUtil.creerEntityManager();
+        ClientDAO cdao = new ClientDAO();
+        Client cl = null;
+        try {
+            List<Client> clients = cdao.findAll(); 
+            for (int i = 0; i < clients.size(); i++) {
+		if(clients.get(i).getMail().equals(mail)){
+                    System.out.println("Bienvenue "+cl.getPrenom());
+                    JpaUtil.fermerEntityManager();
+                    JpaUtil.destroy();
+                    return clients.get(i);
+                }
+	}
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("Vous n'êtes pas encore inscrit!");
+        JpaUtil.fermerEntityManager();
+        JpaUtil.destroy();
+        return cl;
+    }
+    
+    public static List<Restaurant> consultListRestaurant (){
+        JpaUtil.init();
+        JpaUtil.creerEntityManager();
+        List<Restaurant> restos = null;
+        RestaurantDAO rdao= new RestaurantDAO();
+        try {     
+            restos = rdao.findAll();          
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        JpaUtil.fermerEntityManager();
+        JpaUtil.destroy();
+        return restos;
+    }
+    
+      public static List<Produit> consultListProduit (long idr){
+            JpaUtil.init();
+            JpaUtil.creerEntityManager();
+            Restaurant resto = null;
+            RestaurantDAO rdao= new RestaurantDAO();
+        try {     
+            resto = rdao.findById(idr);
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        JpaUtil.fermerEntityManager();
+        JpaUtil.destroy();
+        return resto.getProduits();
+    }    
+      
+      public static void changerEtatLivreur (Livreur li, boolean b){
+         li.setDisponibilite(b);
+     }
+      
+      public static void setDateFin (Commande c, Date d){
+         c.setdateFin(d);
+     }
+      
+      public static Map<Long,LatLng> consultListDepartLivreur (){
+          
+            JpaUtil.init();
+            JpaUtil.creerEntityManager();
+            LivreurDAO ld= new LivreurDAO();
+            Map<Long,LatLng> mapLiv = null;
+        try {     
+            
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        JpaUtil.fermerEntityManager();
+        JpaUtil.destroy();
+        return mapLiv;
+    }  
 }

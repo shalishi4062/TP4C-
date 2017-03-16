@@ -25,8 +25,8 @@ public class LivreurMachine extends Livreur implements Serializable{
         
     }
     
-    public LivreurMachine(String a, Double c, boolean d, double v ){
-        super(a, c, d);
+    public LivreurMachine(String a, Double lon, Double lat, Double c, boolean d, double v ){
+        super(a, lon, lat, c, d);
         vitesse = v;
     }
 
@@ -41,7 +41,7 @@ public class LivreurMachine extends Livreur implements Serializable{
 
     @Override
     public String toString() {
-        return "LivreurMachine :{" + "id=" + id + ", adresse=" + adresse + ", vitesse=" + vitesse + ", capacité="+ capacite + ", disponibilité="+ disponibilite + '}';
+        return "LivreurMachine :{" + "id=" + id + ", adresse=" + adresse + ", longitude=" + longitude + ", latitude=" + latitude + ", vitesse=" + vitesse + ", capacité="+ capacite + ", disponibilité="+ disponibilite + '}';
     }
     
 }

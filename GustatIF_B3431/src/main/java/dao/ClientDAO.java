@@ -29,7 +29,7 @@ public class ClientDAO {
         return client;
     }
     
-    public List<Client> findAll() throws Exception {
+    public static List<Client> findAll() throws Exception {
         EntityManager em = JpaUtil.obtenirEntityManager();
         List<Client> clients = null;
         try {

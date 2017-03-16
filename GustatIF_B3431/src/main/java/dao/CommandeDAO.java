@@ -34,14 +34,8 @@ public class CommandeDAO {
     }
     
     
-    public void delete(Commande commande) throws Exception{
-        EntityManager em = JpaUtil.obtenirEntityManager();
-        try {
-            em.remove(commande);
-        }
-        catch(Exception e) {
-            throw e;
-        }
+    public void deleteById(long id) throws Exception{
+        
     }
     
     public void cancelById(long id) throws Exception{
@@ -55,7 +49,7 @@ public class CommandeDAO {
         List<Qte_Commande> produits = commande.getQteProduit();
         for(int i=0; i<produits.size(); i++){
             Qte_Commande q = produits.get(i);
-            res += q.getQuantite() + " x " + q.getProduit().getDenomination() + " au prix unitaire de " + q.getProduit().getPrix() + "\n";
+            res += q.getQuantite() + " x " + q.getProduit().getDenomination() + "au prix unitaire de " + q.getProduit().getPrix() + "\n";
             prix +=  q.getQuantite()* q.getProduit().getPrix();
         }
         res += "Prix total : "+ prix;
@@ -91,7 +85,7 @@ public class CommandeDAO {
         EntityManager em = JpaUtil.obtenirEntityManager();
         List<Commande> commandes = null;
         try {
-            Query q = em.createQuery("SELECT co FROM Commande co WHERE co.id = :id");
+            Query q = em.createQuery("SELECT co FROM Commande co WHERE co.CLIENT_ID = :id");
             q.setParameter("id", id);
             commandes = (List<Commande>) q.getResultList();
         }

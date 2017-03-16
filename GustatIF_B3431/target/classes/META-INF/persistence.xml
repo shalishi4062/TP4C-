@@ -3,18 +3,18 @@
   <persistence-unit name="gustatifPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>metier.modele.Client</class>
-    <class>metier.modele.Produit</class>
-    <class>metier.modele.Restaurant</class>
     <class>metier.modele.Commande</class>
     <class>metier.modele.Livreur</class>
     <class>metier.modele.LivreurHumain</class>
     <class>metier.modele.LivreurMachine</class>
+    <class>metier.modele.Produit</class>
     <class>metier.modele.Qte_Commande</class>
+    <class>metier.modele.Restaurant</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/gustatifBD"/>
-      <property name="javax.persistence.jdbc.password" value="jcn.in972@Jcn"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/gustatif"/>
+      <property name="javax.persistence.jdbc.user" value="f"/>
       <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
-      <property name="javax.persistence.jdbc.user" value="jcharlesni"/>
+      <property name="javax.persistence.jdbc.password" value="f"/>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
     </properties>
   </persistence-unit>

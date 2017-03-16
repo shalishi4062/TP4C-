@@ -26,6 +26,8 @@ public abstract class Livreur implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
     protected String adresse;
+    protected Double longitude;
+    protected Double latitude;
     protected Double capacite;
     protected boolean disponibilite;
     
@@ -35,8 +37,10 @@ public abstract class Livreur implements Serializable{
     public Livreur() {
     }
     
-    public Livreur(String a, Double c, boolean d ){
+    public Livreur(String a, Double lon, Double lat, Double c, boolean d ){
         adresse = a;
+        longitude = lon;
+        latitude = lat;
         capacite = c;
         disponibilite = d;
     }
@@ -47,7 +51,13 @@ public abstract class Livreur implements Serializable{
         return adresse;
     }
 
-    
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
     public Double getCapacite() {
         return capacite;
     }
@@ -64,6 +74,11 @@ public abstract class Livreur implements Serializable{
         this.adresse = adresse;
     }
 
+    public void setLatitudeLongitude(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
      public void setCapacite(double c) {
         this.capacite = c;
     }
@@ -76,6 +91,6 @@ public abstract class Livreur implements Serializable{
      }
 
      public String toString(){
-         return "Livreur :{" + "id=" + id + ", adresse=" + adresse + ", capacité="+ capacite + ", disponibilité="+ disponibilite + '}';
+         return "Livreur :{" + "id=" + id + ", adresse=" + adresse + ", longitude=" + longitude + ", latitude=" + latitude + ", capacité="+ capacite + ", disponibilité="+ disponibilite + '}';
      }
 }
