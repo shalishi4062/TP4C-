@@ -73,12 +73,14 @@ public class Main {
     //Fonctions Console
     
     public static Client signIn(){
+        System.out.println("Afin de vous connecter..");
         System.out.println("Veuillez taper le mail avec lequel vous vous êtes inscrit :");
         String mail = clavier.nextLine();
         return smetier.singInClient(mail);
     }
     
     public static Client signUp(){
+        
         System.out.println("Bienvenue sur les services de l'application GustatIF !");
         System.out.println("Veuillez taper..");
         System.out.println("Votre nom :");
@@ -98,7 +100,7 @@ public class Main {
         List<Restaurant> restaurants = stechnique.getRestaurants();
         Restaurant restaurant = selectRestaurant(restaurants);
         Date date = selectDate();
-        Commande commande = new Commande(client, date);
+        Commande commande = new Commande(client, date, restaurant);
         smetier.createCommande(commande);
         while(x!=0){
             Qte_Commande qcommande = selectProduit(restaurant, commande);

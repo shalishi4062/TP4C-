@@ -6,6 +6,7 @@
 package metier.modele;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,6 +40,7 @@ public abstract class Livreur implements Serializable{
         adresse = a;
         capacite = c;
         disponibilite = d;
+        commandes = new ArrayList();
     }
      public Long getId() {
         return id;
@@ -66,7 +68,7 @@ public abstract class Livreur implements Serializable{
 
      public void setCapacite(double c) {
         this.capacite = c;
-    }
+    } 
      public void setDisponibilite(boolean c) {
         this.disponibilite = c;
     }
@@ -78,6 +80,22 @@ public abstract class Livreur implements Serializable{
      public String toString(){
          return "Livreur :{" + "id=" + id + ", adresse=" + adresse + ", capacité="+ capacite + ", disponibilité="+ disponibilite + '}';
      }
+     
+    public void livrer(){
+        for(int i=0; i<commandes.size(); i++){
+            Commande commande = commandes.get(i);
+            if(commande.getEtat().equals("En attente") || commande.getEtat().equals("En cours")){
+               disponibilite = false;
+               System.out.println("La commande n°"+ commande.getID() +" a été livré au bout de "+ commande.getTimeLivraison()+ " minutes.");
+               validerCommande(commande);
+            }
+        }
+    }
+     
+    public void validerCommande(Commande commande){
+        commande.setEtat(2);
+    }
+    
 
     public String getNom() {
         return "lol";

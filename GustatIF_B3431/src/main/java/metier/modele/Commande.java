@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import static javax.persistence.TemporalType.DATE;
+import util.GeoTest;
 
 /**
  *
@@ -41,6 +42,9 @@ public class Commande implements Serializable{
     @ManyToOne
     private Livreur livreur;
     
+    @ManyToOne
+    private Restaurant restaurant;
+    
     @OneToMany(mappedBy="commande")
     List<Qte_Commande> qte_commande;
     
@@ -49,13 +53,14 @@ public class Commande implements Serializable{
     protected Commande() {
     }
     
-    public Commande(Client c, Date d){
+    public Commande(Client c, Date d, Restaurant r){
         dateDeb = d;
         client = c;
         livreur = null;
         qte_commande = new ArrayList();
         etat = "En attente";
         dateFin = null;
+        restaurant = r;
     }
 
     
@@ -87,7 +92,15 @@ public class Commande implements Serializable{
         return dateFin;
     }
     
+    public Restaurant getRestaurant(){
+        return restaurant;
+    }
     
+    public double getTimeLivraison(){
+        double time = 0.0;
+        if(livreur != null) time = GeoTest.getTripDurationByBicycleInMinute(GeoTest.getLatLng(livreur.getAdresse()),GeoTest.getLatLng(client.getAdresse()), GeoTest.getLatLng(restaurant.getAdresse()));
+        return time;
+    }
     
     public void setDateDeb(Date d){
         dateDeb = d;
@@ -99,6 +112,10 @@ public class Commande implements Serializable{
     
     public void setLivreur(Livreur l){
         livreur = l;
+    }
+    
+    public void setRestaurant(Restaurant r){
+        restaurant = r;
     }
     
     public void addQteProduit(Qte_Commande qP){

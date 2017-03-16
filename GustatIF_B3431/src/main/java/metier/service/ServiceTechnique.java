@@ -64,9 +64,10 @@ public class ServiceTechnique {
         commande.setLivreur(livreur);
         if(commande.getPoidsTotal()>livreur.getCapacite()){
               livreur = selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
-              commande.setLivreur(livreur);
-              envoiMailLivreur(livreur, commande, restaurant);
         }
+        commande.setLivreur(livreur);
+        envoiMailLivreur(livreur, commande, restaurant);
+        livreur.livrer();
         System.out.println("Votre commande : \n"+commande.getProduitsCommande()+ "\n a été confirmée et créee.");
         Date now = new Date();
         if(now.after(commande.getDateDeb())){
