@@ -24,8 +24,8 @@ public class LivreurHumain extends Livreur implements Serializable{
         
     }
     
-    public LivreurHumain(String a, Double c, boolean d, String n, String p, String m) {
-        super(a, c, d);
+    public LivreurHumain(String a, Double c, String n, String p, String m) {
+        super(a, c);
         nom = n;
         prenom = p;
         mail = m;

@@ -5,6 +5,7 @@
  */
 package metier.service;
 
+import com.google.maps.model.LatLng;
 import dao.ClientDAO;
 import dao.CommandeDAO;
 import dao.JpaUtil;
@@ -27,6 +28,7 @@ import metier.modele.Produit;
 import metier.modele.Qte_Commande;
 import metier.modele.Restaurant;
 import util.GeoTest;
+import static util.GeoTest.getLatLng;
 
 /**
  *
@@ -41,6 +43,94 @@ public class ServiceTechnique {
     Qte_CommandeDAO qdao = new Qte_CommandeDAO();
     RestaurantDAO rdao = new RestaurantDAO();
     Scanner clavier = new Scanner(System.in);
+    
+    public void createCommande(Commande commande){
+        JpaUtil.init();
+        JpaUtil.creerEntityManager();
+        JpaUtil.ouvrirTransaction();
+        try {
+            codao.create(commande);
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        JpaUtil.validerTransaction();
+        JpaUtil.fermerEntityManager();
+        JpaUtil.destroy();
+    }
+    
+    public void updateCommande(Commande commande){
+        JpaUtil.init();
+        JpaUtil.creerEntityManager();
+        JpaUtil.ouvrirTransaction();
+        try {
+            //Envoyer Mails
+            codao.update(commande);
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        JpaUtil.validerTransaction();
+        JpaUtil.fermerEntityManager();
+        JpaUtil.destroy();
+    }
+    
+    public void updateLivreur(Livreur livreur){
+        JpaUtil.init();
+        JpaUtil.creerEntityManager();
+        JpaUtil.ouvrirTransaction();
+        try {
+            //Envoyer Mails
+            ldao.update(livreur);
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        JpaUtil.validerTransaction();
+        JpaUtil.fermerEntityManager();
+        JpaUtil.destroy();
+    }
+    
+    public Client signUpClient(String nom, String prenom, String mail, String adresse) {
+        
+        LatLng latlong = getLatLng(adresse);
+        
+        JpaUtil.init();
+        JpaUtil.creerEntityManager();
+        Client cl = new Client(nom, prenom, mail, adresse);
+        try {
+            JpaUtil.ouvrirTransaction();
+            cdao.create(cl);
+            JpaUtil.validerTransaction();
+            envoiMailInscription(1, cl);
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+            envoiMailInscription(0, cl);
+        }
+        JpaUtil.fermerEntityManager();
+        JpaUtil.destroy();
+        return cl;
+    }
+    
+    public Client singInClient(String mail){
+        JpaUtil.init();
+        JpaUtil.creerEntityManager();
+        ClientDAO cdao = new ClientDAO();
+        List<Client> clients = new ArrayList();
+        Client cl = null;
+        try {
+            clients = cdao.findAll(); 
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (int i = 0; i < clients.size(); i++) {
+		if(clients.get(i).getMail().equals(mail)){
+                    cl = clients.get(i);
+                    System.out.println("Bienvenue "+cl.getPrenom());
+                }
+        }
+        if(cl==null) System.out.println("Vous n'êtes pas encore inscrit!");
+        JpaUtil.fermerEntityManager();
+        JpaUtil.destroy();
+        return cl;
+    }
     
     
     public void createQteCommande(Qte_Commande qcommande){
@@ -57,23 +147,7 @@ public class ServiceTechnique {
         JpaUtil.destroy();
     }
     
-    public void checkCommande(Commande commande, Restaurant restaurant){
-        
-        Client client = commande.getClient();
-        Livreur livreur = selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
-        commande.setLivreur(livreur);
-        if(commande.getPoidsTotal()>livreur.getCapacite()){
-              livreur = selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
-        }
-        commande.setLivreur(livreur);
-        envoiMailLivreur(livreur, commande, restaurant);
-        livreur.livrer();
-        System.out.println("Votre commande : \n"+commande.getProduitsCommande()+ "\n a été confirmée et créee.");
-        Date now = new Date();
-        if(now.after(commande.getDateDeb())){
-            commande.setEtat(1);
-        }
-    }
+    
     
     public List<Livreur> getLivreurs(){
         JpaUtil.init();
@@ -107,40 +181,7 @@ public class ServiceTechnique {
         return restaurants;
     }
     
-    public Livreur selectNewLivreur(double poids, Client client, Restaurant restaurant) {
-        Livreur livreur;
-        List<Livreur> livreursDispo = new ArrayList();
-        List<Livreur> livreurs = getLivreurs();
-        for(int i=0; i<livreurs.size(); i++){
-            Livreur liv = livreurs.get(i);
-            if(liv.getDisponibilite() && liv.getCapacite()>=poids){
-                livreursDispo.add(liv);
-            }
-        }
-        double time = 99999999;
-        double temp = 99999999;
-        int ires =0;
-        for(int i=0; i<livreursDispo.size(); i++){
-            Livreur l = livreursDispo.get(i);
-            temp = GeoTest.getTripDurationByBicycleInMinute(GeoTest.getLatLng(l.getAdresse()),GeoTest.getLatLng(client.getAdresse()), GeoTest.getLatLng(restaurant.getAdresse()));
-            if(temp<time){
-                time = temp;
-                ires = i;
-            }
-        }
-        if(livreursDispo.size()>0){
-            livreur = livreursDispo.get(ires);
-            
-        } else {
-            System.out.println("Votre commande est trop lourde");
-            return null;
-        }
-        return livreur;
-            
-    }
-    
-    
-     public void envoiMailInscription(int etat, Client cl){
+    public void envoiMailInscription(int etat, Client cl){
         //si 0 echec si 1 reussi
         System.out.println("Expediteur : gustatif@gustatif.com\n"
                     + "Pour : " + cl.getMail() +"\n"
@@ -179,5 +220,6 @@ public class ServiceTechnique {
                                                 
 
     }
+    
     
 }

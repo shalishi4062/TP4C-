@@ -18,6 +18,8 @@ import javax.persistence.PrimaryKeyJoinColumn;
  */
 @Entity
 public class LivreurMachine extends Livreur implements Serializable{
+    
+    private String denomination;
 
     private double vitesse;
     
@@ -25,9 +27,18 @@ public class LivreurMachine extends Livreur implements Serializable{
         
     }
     
-    public LivreurMachine(String a, Double c, boolean d, double v ){
-        super(a, c, d);
+    public LivreurMachine(String a, Double c, String den, double v ){
+        super(a, c);
+        denomination = den;
         vitesse = v;
+    }
+    
+    public String getDenomination(){
+        return denomination;
+    }
+    
+    public void setDenomination(String d){
+        denomination = d;
     }
 
     

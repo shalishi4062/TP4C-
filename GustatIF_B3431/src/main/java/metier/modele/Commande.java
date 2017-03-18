@@ -88,7 +88,7 @@ public class Commande implements Serializable{
         return dateDeb;
     }
     
-    public Date getdateFin(){
+    public Date getDateFin(){
         return dateFin;
     }
     
@@ -106,12 +106,13 @@ public class Commande implements Serializable{
         dateDeb = d;
     }
     
-    public void setdateFin(Date d){
+    public void setDateFin(Date d){
         dateFin = d;
     }
     
     public void setLivreur(Livreur l){
         livreur = l;
+        livreur.addCommande(this);
     }
     
     public void setRestaurant(Restaurant r){

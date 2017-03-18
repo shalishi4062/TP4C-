@@ -47,77 +47,56 @@ public class ServiceMetier {
     
     
     
-    public void createCommande(Commande commande){
-        JpaUtil.init();
-        JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
-        try {
-            codao.create(commande);
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        JpaUtil.validerTransaction();
-        JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
-    }
-    
-    public void updateCommande(Commande commande){
-        JpaUtil.init();
-        JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
-        try {
-            //Envoyer Mails
-            codao.update(commande);
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        JpaUtil.validerTransaction();
-        JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
-    }
-    
-    public Client signUpClient(String nom, String prenom, String mail, String adresse) {
+    public void checkCommande(Commande commande, Restaurant restaurant){
         
-        LatLng latlong = getLatLng(adresse);
-        
-        JpaUtil.init();
-        JpaUtil.creerEntityManager();
-        Client cl = new Client(nom, prenom, mail, adresse);
-        try {
-            JpaUtil.ouvrirTransaction();
-            cdao.create(cl);
-            JpaUtil.validerTransaction();
-            stechnique.envoiMailInscription(1,cl);
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
-            stechnique.envoiMailInscription(0,cl);
+        Client client = commande.getClient();
+        Livreur livreur = selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
+        commande.setLivreur(livreur);
+        if(commande.getPoidsTotal()>livreur.getCapacite()){
+            livreur = selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
         }
-        JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
-        return cl;
+        commande.setLivreur(livreur);
+        if(livreur instanceof LivreurHumain) stechnique.envoiMailLivreur(livreur, commande, restaurant);
+        livreur.livrer();
+        stechnique.updateCommande(commande);
+        stechnique.updateLivreur(livreur);
+        System.out.println("Votre commande : \n"+commande.getProduitsCommande()+ "\n a été confirmée et créee.");
+        
+        
     }
     
-    public Client singInClient(String mail){
-        JpaUtil.init();
-        JpaUtil.creerEntityManager();
-        ClientDAO cdao = new ClientDAO();
-        List<Client> clients = new ArrayList();
-        Client cl = null;
-        try {
-            clients = cdao.findAll(); 
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+    public Livreur selectNewLivreur(double poids, Client client, Restaurant restaurant) {
+        Livreur livreur;
+        List<Livreur> livreursDispo = new ArrayList();
+        List<Livreur> livreurs = stechnique.getLivreurs();
+        for(int i=0; i<livreurs.size(); i++){
+            Livreur liv = livreurs.get(i);
+            if(liv.getDisponibilite() && liv.getCapacite()>=poids){
+                livreursDispo.add(liv);
+            }
         }
-        for (int i = 0; i < clients.size(); i++) {
-		if(clients.get(i).getMail().equals(mail)){
-                    cl = clients.get(i);
-                    System.out.println("Bienvenue "+cl.getPrenom());
-                }
+        double time = 99999999;
+        double temp = 99999999;
+        int ires =0;
+        for(int i=0; i<livreursDispo.size(); i++){
+            Livreur l = livreursDispo.get(i);
+            temp = GeoTest.getTripDurationByBicycleInMinute(GeoTest.getLatLng(l.getAdresse()),GeoTest.getLatLng(client.getAdresse()), GeoTest.getLatLng(restaurant.getAdresse()));
+            if(temp<time){
+                time = temp;
+                ires = i;
+            }
         }
-        if(cl==null) System.out.println("Vous n'êtes pas encore inscrit!");
-        JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
-        return cl;
+        if(livreursDispo.size()>0){
+            livreur = livreursDispo.get(ires);
+            
+        } else {
+            System.out.println("Votre commande est trop lourde");
+            return null;
+        }
+        return livreur;
+            
     }
+    
+    
     
 }

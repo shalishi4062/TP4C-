@@ -14,6 +14,7 @@ import dao.Qte_CommandeDAO;
 import dao.RestaurantDAO;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -29,6 +30,8 @@ import metier.modele.Restaurant;
 import metier.service.ServiceMetier;
 import metier.service.ServiceTechnique;
 import util.GeoTest;
+import static util.Saisie.lireChaine;
+import static util.Saisie.lireInteger;
 
 /**
  *
@@ -38,33 +41,37 @@ import util.GeoTest;
 
 public class Main {
     
-     
-        
         static ServiceMetier smetier = new ServiceMetier();
         static ServiceTechnique stechnique = new ServiceTechnique();
         static Scanner clavier = new Scanner(System.in);
     
     public static void main(String[] args){
         
-        Client client = null;
         System.out.println("Bienvenue sur l'application GustatIF !");
-        System.out.println("Souhaitez vous vous connecter(1) ou vous inscrire(2) ?");
-        int n = clavier.nextInt();
-        while(n!=1 && n!=2){
-            System.out.println("Veuillez taper (1) ou (2)");
-            n = clavier.nextInt();
-        }
+        
+        Client client = null;
+        Integer n = firstPage();
+        List<Integer> l = Arrays.asList(1,2);
+        
         if(n==1){
             client = signIn();
+            while (client == null){
+                Integer i = lireInteger(" Voulez vous retaper votre adresse mail (1) ou vous vous inscrire (2) ?",l);
+                if(i==1 && i!=null){
+                    client = signIn();
+                }else if(i!=null) {
+                    client = signUp();
+                }
+            }
         } else {
             client = signUp();
         }
         System.out.println("Vous êtes connectés !");
         n=-1;
+        List<Integer> l1 = Arrays.asList(0,1);
         while(n!=0){
             n=-1;
-            System.out.println("Voulez vous effectuer une commande (1) ou quitter l'application (0) ?");
-            n = clavier.nextInt();
+            n = lireInteger("Voulez vous effectuer une commande (1) ou quitter l'application (0) ?", l1);
             if(n==1) createCommande(client);
         }
         
@@ -72,26 +79,32 @@ public class Main {
     
     //Fonctions Console
     
+    public static Integer firstPage(){
+        
+        List<Integer> l = Arrays.asList(1,2);
+        Integer n = lireInteger("Souhaitez vous vous connecter(1) ou vous inscrire(2) ?", l);;
+        while(n!=1 && n!=2){
+            n = lireInteger("Souhaitez vous vous connecter(1) ou vous inscrire(2) ?", l);
+        }
+        return n;
+        
+    }
+    
     public static Client signIn(){
         System.out.println("Afin de vous connecter..");
-        System.out.println("Veuillez taper le mail avec lequel vous vous êtes inscrit :");
-        String mail = clavier.nextLine();
-        return smetier.singInClient(mail);
+        String mail = lireChaine("Veuillez taper le mail avec lequel vous vous êtes inscrit :");
+        return stechnique.singInClient(mail);
     }
     
     public static Client signUp(){
         
         System.out.println("Bienvenue sur les services de l'application GustatIF !");
         System.out.println("Veuillez taper..");
-        System.out.println("Votre nom :");
-        String nom = clavier.nextLine();
-        System.out.println("Votre prénom :");
-        String prenom = clavier.nextLine();
-        System.out.println("Votre mail :");
-        String mail = clavier.nextLine();
-        System.out.println("Votre adresse :");
-        String adresse = clavier.nextLine();
-        return smetier.signUpClient(nom, prenom, mail, adresse);
+        String nom = lireChaine("Votre nom :");
+        String prenom = lireChaine("Votre prénom :");
+        String mail = lireChaine("Votre mail :");
+        String adresse = lireChaine("Votre adresse :");
+        return stechnique.signUpClient(nom, prenom, mail, adresse);
     }
     
     public static void createCommande(Client client){
@@ -101,43 +114,51 @@ public class Main {
         Restaurant restaurant = selectRestaurant(restaurants);
         Date date = selectDate();
         Commande commande = new Commande(client, date, restaurant);
-        smetier.createCommande(commande);
+        stechnique.createCommande(commande);
         while(x!=0){
             Qte_Commande qcommande = selectProduit(restaurant, commande);
             commande.addQteProduit(qcommande);
-            System.out.println("Souhaitez vous un autre produit(1) ou ce sera tout(0) ? #Tapez le chiffre entre parenthèse lié à votre choix");
-            x = clavier.nextInt();
+            x = lireInteger("Souhaitez vous un autre produit(1) ou ce sera tout(0) ? "
+                    + "#Tapez le chiffre entre parenthèse lié à votre choix");
         }
-        stechnique.checkCommande(commande, restaurant);
-        smetier.updateCommande(commande);
+        smetier.checkCommande(commande, restaurant);
     }
     
     public static Restaurant selectRestaurant(List<Restaurant> restaurants){
-        int choix = -1;
+        Integer choix = null;
+        List<Integer> l = new ArrayList<>();
+        for (Integer j= 1; j<=restaurants.size(); j++){
+            l.add(j);
+        }
         System.out.println("Choisissez un restaurant parmi ceux ci :");
         for(int i=1; i<restaurants.size(); i++){
             Restaurant resto = restaurants.get(i-1);
             System.out.println("("+i+")" + resto.getDenomination() + " : " + resto.getDescription());
         }
-        System.out.println("Tapez le numéro du restaurant choisi.");
-        choix = clavier.nextInt();
+        while (choix == null){
+            choix = lireInteger("Tapez le numéro du restaurant choisi.",l);
+        }
         return restaurants.get(choix-1);
     }
     
     public static Qte_Commande selectProduit(Restaurant restaurant, Commande commande){
-        int p;
+        Integer p = null;
         int quantite;
         int x = 0;
-        System.out.println("Voici la liste des produits disponibles dans le restaurant : " + restaurant.getDenomination());
+        System.out.println("Voici la liste des produits disponibles dans le restaurant " + restaurant.getDenomination() + " : ");
         List<Produit> produits = restaurant.getProduits();
         for(int i=1; i<produits.size(); i++){
             Produit produit = produits.get(i-1);
             System.out.println("("+i+")" + produit.getDenomination() + " : " + produit.getDescription());
         }
-        System.out.println("Tapez le numéro du produit que vous souhaitez.");
-        p = clavier.nextInt();
-        System.out.println("Quelle quantité ?");
-        quantite = clavier.nextInt();
+        List<Integer> l = new ArrayList<>();
+        for (Integer j= 1; j<=produits.size(); j++){
+            l.add(j);
+        }
+        while (p == null){
+            p = lireInteger("Tapez le numero du produit que vous souhaitez.",l);
+        }
+        quantite = lireInteger("Quelle quantité ?");
         Qte_Commande qcommande = new Qte_Commande(commande, produits.get(p-1), quantite);
         stechnique.createQteCommande(qcommande);
         return qcommande;
@@ -145,14 +166,16 @@ public class Main {
     
     public static Date selectDate(){
         Date date;
-        System.out.println("Souhaitez vous être livré maintenant(1) ou à une date précise(2) ?");
-        int choix = clavier.nextInt();
+        List<Integer> l = Arrays.asList(1,2);
+        Integer choix = null;
+        while (choix == null){
+            choix= lireInteger("Souhaitez vous être livré maintenant(1) ou à une date précise(2) ?", l);
+        }
         date = new Date();
         String res ="";
         if(choix!=1){
-            System.out.println("A quelle heure souhaitez vous être livré ? (XXhXX)");
             while(res.equals("")){
-                res = clavier.nextLine();
+                res = lireChaine("A quelle heure souhaitez vous être livré ? (XXhXX)");
             }
             int heure = Integer.parseInt(res.substring(0, 1));
             int minute = Integer.parseInt(res.substring(3));
