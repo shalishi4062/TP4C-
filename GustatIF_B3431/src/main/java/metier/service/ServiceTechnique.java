@@ -24,6 +24,7 @@ import metier.modele.Client;
 import metier.modele.Commande;
 import metier.modele.Livreur;
 import metier.modele.LivreurHumain;
+import metier.modele.LivreurMachine;
 import metier.modele.Produit;
 import metier.modele.Qte_Commande;
 import metier.modele.Restaurant;
@@ -44,35 +45,6 @@ public class ServiceTechnique {
     RestaurantDAO rdao = new RestaurantDAO();
     Scanner clavier = new Scanner(System.in);
     
-    public void createCommande(Commande commande){
-        JpaUtil.init();
-        JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
-        try {
-            codao.create(commande);
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        JpaUtil.validerTransaction();
-        JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
-    }
-    
-    public void updateCommande(Commande commande){
-        JpaUtil.init();
-        JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
-        try {
-            //Envoyer Mails
-            codao.update(commande);
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        JpaUtil.validerTransaction();
-        JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
-    }
-    
     public void updateLivreur(Livreur livreur){
         JpaUtil.init();
         JpaUtil.creerEntityManager();
@@ -88,57 +60,44 @@ public class ServiceTechnique {
         JpaUtil.destroy();
     }
     
-    public Client signUpClient(String nom, String prenom, String mail, String adresse) {
-        
-        LatLng latlong = getLatLng(adresse);
-        
-        JpaUtil.init();
-        JpaUtil.creerEntityManager();
-        Client cl = new Client(nom, prenom, mail, adresse);
-        try {
-            JpaUtil.ouvrirTransaction();
-            cdao.create(cl);
-            JpaUtil.validerTransaction();
-            envoiMailInscription(1, cl);
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
-            envoiMailInscription(0, cl);
+    public Livreur selectNewLivreur(double poids, Client client, Restaurant restaurant) {
+        Livreur livreur;
+        List<Livreur> livreursDispo = new ArrayList();
+        List<Livreur> livreurs = getLivreurs();
+        for(int i=0; i<livreurs.size(); i++){
+            Livreur liv = livreurs.get(i);
+            if(liv.getDisponibilite() && liv.getCapacite()>=poids){
+                livreursDispo.add(liv);
+            }
         }
-        JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
-        return cl;
+        double time = 99999999;
+        double temp = 99999999;
+        int ires =0;
+        for(int i=0; i<livreursDispo.size(); i++){
+            Livreur l = livreursDispo.get(i);
+            temp = GeoTest.getTripDurationByBicycleInMinute(GeoTest.getLatLng(l.getAdresse()),GeoTest.getLatLng(client.getAdresse()), GeoTest.getLatLng(restaurant.getAdresse()));
+            if(temp<time){
+                time = temp;
+                ires = i;
+            }
+        }
+        if(livreursDispo.size()>0){
+            livreur = livreursDispo.get(ires);
+            
+        } else {
+            System.out.println("Votre commande est trop lourde");
+            return null;
+        }
+        return livreur;
     }
     
-    public Client singInClient(String mail){
-        JpaUtil.init();
-        JpaUtil.creerEntityManager();
-        ClientDAO cdao = new ClientDAO();
-        List<Client> clients = new ArrayList();
-        Client cl = null;
-        try {
-            clients = cdao.findAll(); 
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        for (int i = 0; i < clients.size(); i++) {
-		if(clients.get(i).getMail().equals(mail)){
-                    cl = clients.get(i);
-                    System.out.println("Bienvenue "+cl.getPrenom());
-                }
-        }
-        if(cl==null) System.out.println("Vous n'êtes pas encore inscrit!");
-        JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
-        return cl;
-    }
-    
-    
-    public void createQteCommande(Qte_Commande qcommande){
+        public void updateCommande(Commande commande){
         JpaUtil.init();
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         try {
-            qdao.create(qcommande);
+            //Envoyer Mails
+            codao.update(commande);
         } catch (Exception ex) {
             Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -146,8 +105,6 @@ public class ServiceTechnique {
         JpaUtil.fermerEntityManager();
         JpaUtil.destroy();
     }
-    
-    
     
     public List<Livreur> getLivreurs(){
         JpaUtil.init();
@@ -165,21 +122,7 @@ public class ServiceTechnique {
         return livreurs;
     }
     
-    public List<Restaurant> getRestaurants(){
-        JpaUtil.init();
-        JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
-        List<Restaurant> restaurants = new ArrayList();
-        try {
-            restaurants = rdao.findAll();
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        JpaUtil.validerTransaction();
-        JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
-        return restaurants;
-    }
+
     
     public void envoiMailInscription(int etat, Client cl){
         //si 0 echec si 1 reussi
@@ -215,11 +158,7 @@ public class ServiceTechnique {
                                                 + "\t"+co.getClient().getAdresse()+"\n\n"
                                     + "Commande : \n"
                                                         + "\t-a continuer !!!!!!!!!!!!!!!");
-        
-        
-                                                
 
     }
-    
     
 }

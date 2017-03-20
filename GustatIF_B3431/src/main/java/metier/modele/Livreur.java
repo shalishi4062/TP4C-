@@ -49,7 +49,6 @@ public abstract class Livreur implements Serializable{
       public String getAdresse() {
         return adresse;
     }
-
     
     public Double getCapacite() {
         return capacite;

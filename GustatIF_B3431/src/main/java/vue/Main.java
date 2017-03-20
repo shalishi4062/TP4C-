@@ -42,13 +42,13 @@ import static util.Saisie.lireInteger;
 public class Main {
     
         static ServiceMetier smetier = new ServiceMetier();
-        static ServiceTechnique stechnique = new ServiceTechnique();
-        static Scanner clavier = new Scanner(System.in);
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception{
         
         System.out.println("Bienvenue sur l'application GustatIF !");
         
+        smetier.createLivreurs(); //a mettre que si pas de livreurs
+       
         Client client = null;
         Integer n = firstPage();
         List<Integer> l = Arrays.asList(1,2);
@@ -68,9 +68,10 @@ public class Main {
         }
         System.out.println("Vous êtes connectés !");
         n=-1;
+        List<Integer> l1 = Arrays.asList(0,1);
         while(n!=0){
             n=-1;
-            n = lireInteger("Voulez vous effectuer une commande (1) ou quitter l'application (0) ?", l);
+            n = lireInteger("Voulez vous effectuer une commande (1) ou quitter l'application (0) ?", l1);
             if(n==1) createCommande(client);
         }
         
@@ -109,7 +110,7 @@ public class Main {
     public static void createCommande(Client client){
         
         int x = 2;
-        List<Restaurant> restaurants = stechnique.getRestaurants();
+        List<Restaurant> restaurants = smetier.getRestaurants();
         Restaurant restaurant = selectRestaurant(restaurants);
         Date date = selectDate();
         Commande commande = new Commande(client, date, restaurant);
@@ -120,8 +121,7 @@ public class Main {
             x = lireInteger("Souhaitez vous un autre produit(1) ou ce sera tout(0) ? "
                     + "#Tapez le chiffre entre parenthèse lié à votre choix");
         }
-        stechnique.checkCommande(commande, restaurant);
-        smetier.updateCommande(commande);
+        smetier.checkCommande(commande, restaurant);
     }
     
     public static Restaurant selectRestaurant(List<Restaurant> restaurants){
@@ -131,7 +131,7 @@ public class Main {
             l.add(j);
         }
         System.out.println("Choisissez un restaurant parmi ceux ci :");
-        for(int i=1; i<restaurants.size(); i++){
+        for(int i=1; i<=restaurants.size(); i++){
             Restaurant resto = restaurants.get(i-1);
             System.out.println("("+i+")" + resto.getDenomination() + " : " + resto.getDescription());
         }
@@ -147,7 +147,7 @@ public class Main {
         int x = 0;
         System.out.println("Voici la liste des produits disponibles dans le restaurant " + restaurant.getDenomination() + " : ");
         List<Produit> produits = restaurant.getProduits();
-        for(int i=1; i<produits.size(); i++){
+        for(int i=1; i<=produits.size(); i++){
             Produit produit = produits.get(i-1);
             System.out.println("("+i+")" + produit.getDenomination() + " : " + produit.getDescription());
         }
@@ -160,7 +160,7 @@ public class Main {
         }
         quantite = lireInteger("Quelle quantité ?");
         Qte_Commande qcommande = new Qte_Commande(commande, produits.get(p-1), quantite);
-        stechnique.createQteCommande(qcommande);
+        smetier.createQteCommande(qcommande);
         return qcommande;
     }
     
@@ -184,5 +184,6 @@ public class Main {
         }
         return date;
     }
+
     
 }
