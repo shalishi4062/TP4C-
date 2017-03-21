@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -87,7 +88,7 @@ public abstract class Livreur implements Serializable{
             if(commande.getEtat().equals("En attente") && disponibilite){
                commande.setEtat(1);
                disponibilite = false;
-               System.out.println("La commande n°"+ commande.getID() +" a été livré au bout de "+ commande.getTimeLivraison()+ " minutes.");
+               System.out.println("Votre commande a été livrée au bout de "+ commande.getTimeLivraison()+ " minutes.");
                validerCommande(commande);
             }
         }

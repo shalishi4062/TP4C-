@@ -10,10 +10,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -57,6 +60,16 @@ public class Commande implements Serializable{
         dateDeb = d;
         client = c;
         livreur = null;
+        qte_commande = new ArrayList();
+        etat = "En attente";
+        dateFin = null;
+        restaurant = r;
+    }
+    
+    public Commande(Client c, Date d, Restaurant r, Livreur l){
+        dateDeb = d;
+        client = c;
+        livreur = l;
         qte_commande = new ArrayList();
         etat = "En attente";
         dateFin = null;

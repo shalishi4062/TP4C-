@@ -90,22 +90,7 @@ public class ServiceTechnique {
         }
         return livreur;
     }
-    
-        public void updateCommande(Commande commande){
-        JpaUtil.init();
-        JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
-        try {
-            //Envoyer Mails
-            codao.update(commande);
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        JpaUtil.validerTransaction();
-        JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
-    }
-    
+        
     public List<Livreur> getLivreurs(){
         JpaUtil.init();
         JpaUtil.creerEntityManager();
@@ -121,6 +106,8 @@ public class ServiceTechnique {
         JpaUtil.destroy();
         return livreurs;
     }
+    
+        
     
 
     

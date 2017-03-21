@@ -42,13 +42,13 @@ import static util.Saisie.lireInteger;
 public class Main {
     
         static ServiceMetier smetier = new ServiceMetier();
-        static ServiceTechnique stechnique = new ServiceTechnique();
-        static Scanner clavier = new Scanner(System.in);
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception{
         
         System.out.println("Bienvenue sur l'application GustatIF !");
         
+        //smetier.createLivreurs(); //a mettre que si pas de livreurs
+       
         Client client = null;
         Integer n = firstPage();
         List<Integer> l = Arrays.asList(1,2);
@@ -93,7 +93,7 @@ public class Main {
     public static Client signIn(){
         System.out.println("Afin de vous connecter..");
         String mail = lireChaine("Veuillez taper le mail avec lequel vous vous êtes inscrit :");
-        return stechnique.singInClient(mail);
+        return smetier.singInClient(mail);
     }
     
     public static Client signUp(){
@@ -104,17 +104,17 @@ public class Main {
         String prenom = lireChaine("Votre prénom :");
         String mail = lireChaine("Votre mail :");
         String adresse = lireChaine("Votre adresse :");
-        return stechnique.signUpClient(nom, prenom, mail, adresse);
+        return smetier.signUpClient(nom, prenom, mail, adresse);
     }
     
     public static void createCommande(Client client){
         
         int x = 2;
-        List<Restaurant> restaurants = stechnique.getRestaurants();
+        List<Restaurant> restaurants = smetier.getRestaurants();
         Restaurant restaurant = selectRestaurant(restaurants);
         Date date = selectDate();
         Commande commande = new Commande(client, date, restaurant);
-        stechnique.createCommande(commande);
+        smetier.createCommande(commande);
         while(x!=0){
             Qte_Commande qcommande = selectProduit(restaurant, commande);
             commande.addQteProduit(qcommande);
@@ -131,7 +131,7 @@ public class Main {
             l.add(j);
         }
         System.out.println("Choisissez un restaurant parmi ceux ci :");
-        for(int i=1; i<restaurants.size(); i++){
+        for(int i=1; i<=restaurants.size(); i++){
             Restaurant resto = restaurants.get(i-1);
             System.out.println("("+i+")" + resto.getDenomination() + " : " + resto.getDescription());
         }
@@ -147,7 +147,7 @@ public class Main {
         int x = 0;
         System.out.println("Voici la liste des produits disponibles dans le restaurant " + restaurant.getDenomination() + " : ");
         List<Produit> produits = restaurant.getProduits();
-        for(int i=1; i<produits.size(); i++){
+        for(int i=1; i<=produits.size(); i++){
             Produit produit = produits.get(i-1);
             System.out.println("("+i+")" + produit.getDenomination() + " : " + produit.getDescription());
         }
@@ -160,7 +160,7 @@ public class Main {
         }
         quantite = lireInteger("Quelle quantité ?");
         Qte_Commande qcommande = new Qte_Commande(commande, produits.get(p-1), quantite);
-        stechnique.createQteCommande(qcommande);
+        smetier.createQteCommande(qcommande);
         return qcommande;
     }
     
@@ -184,5 +184,6 @@ public class Main {
         }
         return date;
     }
+
     
 }

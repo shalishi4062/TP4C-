@@ -93,13 +93,15 @@ public class ServiceMetier {
     public void createCommande(Commande commande){
         JpaUtil.init();
         JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
+        
         try {
+            JpaUtil.ouvrirTransaction();
             codao.create(commande);
+            JpaUtil.validerTransaction();
         } catch (Exception ex) {
             Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
         }
-        JpaUtil.validerTransaction();
+        
         JpaUtil.fermerEntityManager();
         JpaUtil.destroy();
     }
@@ -125,14 +127,14 @@ public class ServiceMetier {
         commande.setLivreur(livreur);
         if(commande.getPoidsTotal()>livreur.getCapacite()){
             livreur = stechnique.selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
+            //commande.setLivreur(livreur);
         }
-        commande.setLivreur(livreur);
-        if(livreur instanceof LivreurHumain) stechnique.envoiMailLivreur(livreur, commande, restaurant);
-        livreur.livrer();
-        stechnique.updateCommande(commande);
+        updateCommande(commande);
         stechnique.updateLivreur(livreur);
         System.out.println("Votre commande : \n"+commande.getProduitsCommande()+ "\n a été confirmée et créee.");
-
+        if(livreur instanceof LivreurHumain) stechnique.envoiMailLivreur(livreur, commande, restaurant);
+        livreur.livrer();
+        updateCommande(commande);
     }
     
     public List<Restaurant> getRestaurants(){
@@ -149,22 +151,6 @@ public class ServiceMetier {
         JpaUtil.fermerEntityManager();
         JpaUtil.destroy();
         return restaurants;
-    }
-        
-    public List<Livreur> getLivreurs(){
-        JpaUtil.init();
-        JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
-        List<Livreur> livreurs = new ArrayList();
-        try {
-            livreurs = ldao.findAll();
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        JpaUtil.validerTransaction();
-        JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
-        return livreurs;
     }
 
     public List<Client> getClients(){
@@ -241,5 +227,22 @@ public class ServiceMetier {
         JpaUtil.fermerEntityManager();
         JpaUtil.destroy();
     }
+    
+    public void updateCommande(Commande commande){
+        JpaUtil.init();
+        JpaUtil.creerEntityManager();
+        JpaUtil.ouvrirTransaction();
+        try {
+            //Envoyer Mails
+            codao.update(commande);
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        JpaUtil.validerTransaction();
+        JpaUtil.fermerEntityManager();
+        JpaUtil.destroy();
+    }
+    
+    
     
 }
