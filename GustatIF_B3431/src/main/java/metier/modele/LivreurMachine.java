@@ -55,4 +55,8 @@ public class LivreurMachine extends Livreur implements Serializable{
         return "LivreurMachine :{" + "id=" + id + ", adresse=" + adresse + ", vitesse=" + vitesse + ", capacité="+ capacite + ", disponibilité="+ disponibilite + '}';
     }
     
+    public String getNom(){
+        return getDenomination();
+    }
+    
 }

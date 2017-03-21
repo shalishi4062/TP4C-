@@ -47,11 +47,8 @@ public class ServiceMetier {
     Scanner clavier = new Scanner(System.in);
     
     public Client signUpClient(String nom, String prenom, String mail, String adresse) {
-        
-        LatLng latlong = getLatLng(adresse);
-        
-        JpaUtil.init();
         JpaUtil.creerEntityManager();
+        LatLng latlong = getLatLng(adresse);
         Client cl = new Client(nom, prenom, mail, adresse);
         try {
             JpaUtil.ouvrirTransaction();
@@ -63,12 +60,11 @@ public class ServiceMetier {
             stechnique.envoiMailInscription(0, cl);
         }
         JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
+        
         return cl;
     }
     
     public Client singInClient(String mail){
-        JpaUtil.init();
         JpaUtil.creerEntityManager();
         ClientDAO cdao = new ClientDAO();
         List<Client> clients = new ArrayList();
@@ -86,12 +82,10 @@ public class ServiceMetier {
         }
         if(cl==null) System.out.println("Vous n'êtes pas encore inscrit!");
         JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
         return cl;
     }
     
     public void createCommande(Commande commande){
-        JpaUtil.init();
         JpaUtil.creerEntityManager();
         
         try {
@@ -103,11 +97,9 @@ public class ServiceMetier {
         }
         
         JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
     }
     
     public void createQteCommande(Qte_Commande qcommande){
-        JpaUtil.init();
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         try {
@@ -117,7 +109,6 @@ public class ServiceMetier {
         }
         JpaUtil.validerTransaction();
         JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
     }
     
     public void checkCommande(Commande commande, Restaurant restaurant){
@@ -125,9 +116,9 @@ public class ServiceMetier {
         Client client = commande.getClient();
         Livreur livreur = stechnique.selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
         commande.setLivreur(livreur);
-        if(commande.getPoidsTotal()>livreur.getCapacite()){
+        if(!livreur.getDisponibilite()){
             livreur = stechnique.selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
-            //commande.setLivreur(livreur);
+            commande.setLivreur(livreur);
         }
         updateCommande(commande);
         stechnique.updateLivreur(livreur);
@@ -138,7 +129,6 @@ public class ServiceMetier {
     }
     
     public List<Restaurant> getRestaurants(){
-        JpaUtil.init();
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         List<Restaurant> restaurants = new ArrayList();
@@ -149,12 +139,10 @@ public class ServiceMetier {
         }
         JpaUtil.validerTransaction();
         JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
         return restaurants;
     }
 
     public List<Client> getClients(){
-        JpaUtil.init();
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         List<Client> clients = new ArrayList();
@@ -165,12 +153,10 @@ public class ServiceMetier {
         }
         JpaUtil.validerTransaction();
         JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
         return clients;
     }
     
     public List<Commande> getCommandes(){
-        JpaUtil.init();
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         List<Commande> commandes = new ArrayList();
@@ -181,12 +167,10 @@ public class ServiceMetier {
         }
         JpaUtil.validerTransaction();
         JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
         return commandes;
     }
     
     public void createLivreurs (){
-        JpaUtil.init();
         JpaUtil.creerEntityManager();
         LivreurHumain h1 = new LivreurHumain("8 Rue Arago, Villeurbanne", 50852.0,
                 "Premier", "Fisrt", "premier@gustatif.fr");
@@ -225,22 +209,18 @@ public class ServiceMetier {
             Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
         }
         JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
     }
     
     public void updateCommande(Commande commande){
-        JpaUtil.init();
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         try {
-            //Envoyer Mails
             codao.update(commande);
         } catch (Exception ex) {
             Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
         }
         JpaUtil.validerTransaction();
         JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
     }
     
     

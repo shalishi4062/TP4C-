@@ -103,16 +103,20 @@ public abstract class Livreur implements Serializable{
         disponibilite = true;
     }
     
+    public double getVitesse(){
+        return 1.0;
+    }
+    
 
     public String getNom() {
-        return "lol";
+        return "";
     }
 
     public String getPrenom() {
-        return "lol";
+        return "";
     }
 
     public String getMail() {
-        return "lol";
+        return "";
     }
 }

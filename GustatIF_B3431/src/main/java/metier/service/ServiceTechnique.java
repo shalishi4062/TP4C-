@@ -46,7 +46,6 @@ public class ServiceTechnique {
     Scanner clavier = new Scanner(System.in);
     
     public void updateLivreur(Livreur livreur){
-        JpaUtil.init();
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         try {
@@ -57,7 +56,6 @@ public class ServiceTechnique {
         }
         JpaUtil.validerTransaction();
         JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
     }
     
     public Livreur selectNewLivreur(double poids, Client client, Restaurant restaurant) {
@@ -75,7 +73,11 @@ public class ServiceTechnique {
         int ires =0;
         for(int i=0; i<livreursDispo.size(); i++){
             Livreur l = livreursDispo.get(i);
-            temp = GeoTest.getTripDurationByBicycleInMinute(GeoTest.getLatLng(l.getAdresse()),GeoTest.getLatLng(client.getAdresse()), GeoTest.getLatLng(restaurant.getAdresse()));
+            if(l instanceof LivreurHumain){
+                temp = GeoTest.getTripDurationByBicycleInMinute(GeoTest.getLatLng(l.getAdresse()),GeoTest.getLatLng(client.getAdresse()), GeoTest.getLatLng(restaurant.getAdresse()));
+            } else {
+                temp = getTimeMachine(GeoTest.getFlightDistanceInKm(GeoTest.getLatLng(l.getAdresse()), GeoTest.getLatLng(client.getAdresse())), l);
+            }
             if(temp<time){
                 time = temp;
                 ires = i;
@@ -90,9 +92,13 @@ public class ServiceTechnique {
         }
         return livreur;
     }
+    
+    public double getTimeMachine(double distance, Livreur drone){
+        double vitesse = drone.getVitesse();
+        return distance * 60.0 / vitesse ;
+    }
         
     public List<Livreur> getLivreurs(){
-        JpaUtil.init();
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         List<Livreur> livreurs = new ArrayList();
@@ -103,7 +109,6 @@ public class ServiceTechnique {
         }
         JpaUtil.validerTransaction();
         JpaUtil.fermerEntityManager();
-        JpaUtil.destroy();
         return livreurs;
     }
     

@@ -111,7 +111,11 @@ public class Commande implements Serializable{
     
     public double getTimeLivraison(){
         double time = 0.0;
-        if(livreur != null) time = GeoTest.getTripDurationByBicycleInMinute(GeoTest.getLatLng(livreur.getAdresse()),GeoTest.getLatLng(client.getAdresse()), GeoTest.getLatLng(restaurant.getAdresse()));
+        if(livreur != null && livreur instanceof LivreurHumain){
+            time = GeoTest.getTripDurationByBicycleInMinute(GeoTest.getLatLng(livreur.getAdresse()),GeoTest.getLatLng(client.getAdresse()), GeoTest.getLatLng(restaurant.getAdresse()));
+        } else if(livreur instanceof LivreurMachine) {
+            time = GeoTest.getFlightDistanceInKm(GeoTest.getLatLng(livreur.getAdresse()), GeoTest.getLatLng(client.getAdresse()))*60.0/livreur.getVitesse();
+        }
         return time;
     }
     

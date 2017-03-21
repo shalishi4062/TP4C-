@@ -45,6 +45,7 @@ public class Main {
     
     public static void main(String[] args) throws Exception{
         
+        JpaUtil.init();
         System.out.println("Bienvenue sur l'application GustatIF !");
         
         //smetier.createLivreurs(); //a mettre que si pas de livreurs
@@ -75,6 +76,7 @@ public class Main {
             if(n==1) createCommande(client);
         }
         
+        JpaUtil.destroy();
     }
     
     //Fonctions Console
