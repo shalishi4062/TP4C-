@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 /**
  *
@@ -36,6 +38,10 @@ public abstract class Livreur implements Serializable {
 
     @OneToMany(mappedBy = "livreur")
     List<Commande> commandes;
+    
+    @Version
+    @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
+    private long version = 0L;
 
     public Livreur() {
     }
@@ -90,7 +96,7 @@ public abstract class Livreur implements Serializable {
     public void prendreCommande() {
         for (int i = 0; i < commandes.size(); i++) {
             Commande commande = commandes.get(i);
-            if (commande.getEtat().equals("En attente") && disponibilite) {
+            if (commande.getEtat().equals("En attente")) {
                 commande.setEtat(1);
                 disponibilite = false;
                 System.out.println("Votre commande sera livrée au bout de " + commande.getTimeLivraison() + " minutes)");

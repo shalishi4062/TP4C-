@@ -113,19 +113,27 @@ public class ServiceMetier {
         Livreur livreur = stechnique.selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
        if (livreur != null){
            commande.setLivreur(livreur);
-            while(!livreur.getDisponibilite() && livreur !=null){
-                livreur = stechnique.selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
-                commande.setLivreur(livreur);
-            }
-            updateCommande(commande);
-            stechnique.updateLivreur(livreur);
             System.out.println("Votre commande : \n"+commande.getProduitsCommande()+ "\n a été confirmée et créee.");
+            if(livreur.getDisponibilite()){
+                ValiderCommande(livreur);
+            } else {   
+                while(!livreur.getDisponibilite() && livreur !=null){
+                    livreur = stechnique.selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
+                    commande.setLivreur(livreur);
+                }
+                ValiderCommande(livreur);
+            }
             if(livreur instanceof LivreurHumain) stechnique.envoiMailLivreur(livreur, commande, restaurant);
             livreur.prendreCommande();
-            stechnique.updateLivreur(livreur);
+            updateCommande(commande);
        } else {
            System.out.println("Veuillez entrer une nouvelle commande avec moins de produits");
        }
+    }
+    
+    public void ValiderCommande(Livreur l){
+        l.setDisponibilite(false);
+        stechnique.updateLivreur(l);
     }
     
     public List<Restaurant> getRestaurants(){
