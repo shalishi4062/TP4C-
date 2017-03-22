@@ -5,7 +5,6 @@
  */
 package metier.service;
 
-import com.google.maps.model.LatLng;
 import dao.ClientDAO;
 import dao.CommandeDAO;
 import dao.JpaUtil;
@@ -13,9 +12,7 @@ import dao.LivreurDAO;
 import dao.ProduitDAO;
 import dao.Qte_CommandeDAO;
 import dao.RestaurantDAO;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -24,16 +21,12 @@ import metier.modele.Client;
 import metier.modele.Commande;
 import metier.modele.Livreur;
 import metier.modele.LivreurHumain;
-import metier.modele.LivreurMachine;
-import metier.modele.Produit;
-import metier.modele.Qte_Commande;
 import metier.modele.Restaurant;
 import util.GeoTest;
-import static util.GeoTest.getLatLng;
 
 /**
  *
- * @author jcharlesni
+ * @author B3431
  */
 public class ServiceTechnique {
     

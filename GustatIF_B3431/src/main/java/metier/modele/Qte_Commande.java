@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 
 /**
  *
- * @author jcharlesni
+ * @author B431
  */
 
 @Entity
