@@ -14,6 +14,7 @@ import metier.modele.Client;
 import metier.modele.Commande;
 import metier.modele.Livreur;
 import metier.modele.LivreurHumain;
+import metier.modele.LivreurMachine;
 import metier.modele.Produit;
 import metier.modele.Qte_Commande;
 import metier.modele.Restaurant;
@@ -86,10 +87,10 @@ public class Main {
             Commande coli = livreur.getCommandes().get(livreur.getCommandes().size() - 1);
             if (coli.getEtat().equals("En cours")) {
                 while (f == null) {
-                    f = lireInteger("Avez vous fini cette commande (1)\n?" + coli, Arrays.asList(0, 1));
+                    f = lireInteger("Avez vous fini cette commande ? oui(1)\n" + coli, Arrays.asList(0, 1));
                 }
                 if (f == 1) {
-                    livreur.finirCommande(livreur.getCommandes().get(livreur.getCommandes().size() - 1));
+                    smetier.finirCommande(livreur.getCommandes().get(livreur.getCommandes().size() - 1));
                 }
             } else {
                 System.out.println("Vous n'avez aucune commande en cours...");
@@ -106,26 +107,69 @@ public class Main {
 
         Integer i = null;
 
-        while (i == null || i != 0) {
-            i = lireInteger("Souhaitez vous voir tous les restaurants (1), livreurs (2), "
-                    + "clients (3), livraisons en cours (4) ou quitter (0) ?", Arrays.asList(0, 1, 2, 3, 4));
+        while (i == null) {
+            i = lireInteger("Voulez vous finir une commande d'un drone(1) ou voir la belle carte(2) ?", Arrays.asList(1, 2));
+        }
 
-            switch (i) {
-                case 1:
-                    visualisationRestaurants();
+        switch (i) {
+            case 1:
+                List<Livreur> livreurs = smetier.getLivreurs();
+                List<Integer> l = new ArrayList();
+                for (int h = 0; h < livreurs.size(); h++) {
+                    if (livreurs.get(h) instanceof LivreurMachine) {
+                        System.out.println("(" + h + ")" + livreurs.get(h).getNom());
+                        l.add(h);
+                    }
+                }
+                Integer s = null;
+                while (s == null) {
+                    s = lireInteger("Quel drone ? #Entrez le numero correspondant: ", l);
+                }
+                Livreur livreur = livreurs.get(s);
+                Integer f = null;
+
+                if (!livreur.getCommandes().isEmpty()) {
+                    Commande coli = livreur.getCommandes().get(livreur.getCommandes().size() - 1);
+                    if (coli.getEtat().equals("En cours")) {
+                        while (f == null) {
+                            f = lireInteger("Avez vous fini cette commande ? oui(1)\n" + coli, Arrays.asList(0, 1));
+                        }
+                        if (f == 1) {
+                            smetier.finirCommande(livreur.getCommandes().get(livreur.getCommandes().size() - 1));
+                        }
+                    } else {
+                        System.out.println("Vous n'avez aucune commande en cours...");
+                    }
+
+                } else {
+                    System.out.println("Vous n'avez aucune commande...");
+                }
+                i = null;
+                break;
+            case 2:
+                i = null;
+                while (i == null || i != 0) {
+                    i = lireInteger("Souhaitez vous voir tous les restaurants (1), livreurs (2),\n "
+                            + "clients (3), livraisons en cours (4) ou quitter (0) ?", Arrays.asList(0, 1, 2, 3, 4));
+
+                    switch (i) {
+                        case 1:
+                            visualisationRestaurants();
+                            break;
+                        case 2:
+                            visualisationLivreurs();
+                            break;
+                        case 3:
+                            visualisationClients();
+                            break;
+                        case 4:
+                            visualisationCommandesEnCours();
+                            break;
+                        default:
+                            break;
+                    }
                     break;
-                case 2:
-                    visualisationLivreurs(); //faux on a pas les lat long mais l'adresse
-                    break;
-                case 3:
-                    visualisationClients();
-                    break;
-                case 4:
-                    visualisationCommandesEnCours(); //a tester avec commandes
-                    break;
-                default:
-                    break;
-            }
+                }
         }
     }
 
