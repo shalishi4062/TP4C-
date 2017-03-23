@@ -34,7 +34,6 @@ public class Main {
         JpaUtil.init();
 
         //smetier.createLivreurs(); //a mettre que si pas de livreurs
-
         System.out.println("Bienvenue sur l'application GustatIF ! ");
 
         choixIdentite();
@@ -87,7 +86,7 @@ public class Main {
             Commande coli = livreur.getCommandes().get(livreur.getCommandes().size() - 1);
             if (coli.getEtat().equals("En cours")) {
                 while (f == null) {
-                    f = lireInteger("Avez vous fini cette commande ?", Arrays.asList(0, 1));
+                    f = lireInteger("Avez vous fini cette commande (1)\n?" + coli, Arrays.asList(0, 1));
                 }
                 if (f == 1) {
                     livreur.finirCommande(livreur.getCommandes().get(livreur.getCommandes().size() - 1));
