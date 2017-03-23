@@ -8,13 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
-
-/**
- *
- * @author B431
- */
-
+import static util.GeoTest.getLatLng;
 
 @Entity
 public class Client implements Serializable {
@@ -41,8 +35,8 @@ public class Client implements Serializable {
         //this.numero = numero;
         this.mail = mail;
         this.adresse = adresse;
-        this.longitude = null;
-        this.latitude = null;
+        this.longitude = getLatLng(adresse).lng;
+        this.latitude = getLatLng(adresse).lat;
         commandes = new ArrayList();
     }
 
@@ -100,12 +94,9 @@ public class Client implements Serializable {
 
     public void setAdresse(String adresse) {
         this.adresse = adresse;
-    }
-
-    public void setLatitudeLongitude(Double latitude, Double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
+        this.latitude = getLatLng(adresse).lng;
+        this.longitude = getLatLng(adresse).lat;
+    } //d'une pierre deux coup ?
     
     public void addCommande(Commande c){
         commandes.add(c);

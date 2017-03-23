@@ -9,12 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-/**
- *
- * @author B431
- */
-
-
 @Entity
 public class Restaurant implements Serializable {
     @Id

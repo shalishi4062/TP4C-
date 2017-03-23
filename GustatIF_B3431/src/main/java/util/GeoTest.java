@@ -52,30 +52,30 @@ public class GeoTest {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
         double d = R * c;
 
-        return Math.round(d * 1000.0) / 1000.0;
+        return Math.round( d * 1000.0 ) / 1000.0;
     }
 
     public static Double getTripDurationByBicycleInMinute(LatLng origin, LatLng destination, LatLng... steps) {
         return getTripDurationOrDistance(TravelMode.BICYCLING, true, origin, destination, steps);
     }
-
+    
     public static Double getTripDistanceByCarInKm(LatLng origin, LatLng destination, LatLng... steps) {
         return getTripDurationOrDistance(TravelMode.DRIVING, false, origin, destination, steps);
     }
-
+    
     public static Double getTripDurationOrDistance(TravelMode mode, boolean duration, LatLng origin, LatLng destination, LatLng... steps) {
 
         DirectionsApiRequest request = DirectionsApi.getDirections(MON_CONTEXTE_GEOAPI, origin.toString(), destination.toString());
         request.mode(mode);
         request.region("fr");
-
+        
         if (steps.length > 0) {
-
+            
             String[] stringSteps = new String[steps.length];
-            for (int i = 0; i < steps.length; i++) {
+            for (int i=0; i<steps.length; i++) {
                 stringSteps[i] = steps[i].toString();
             }
-
+            
             request.waypoints(stringSteps);
         }
 
@@ -98,7 +98,8 @@ public class GeoTest {
 
         if (duration) {
             return cumulDuration;
-        } else {
+        }
+        else {
             return cumulDistance;
         }
     }
@@ -106,7 +107,7 @@ public class GeoTest {
     public static void main(String[] args) {
         //Logger.getLogger(GeoApiContext.class.getName()).setLevel(Level.WARNING);
         Logger.getLogger(OkHttpRequestHandler.class.getName()).setLevel(Level.WARNING);
-
+        
         String adresse1 = "7 Avenue Jean Capelle Ouest, Villeurbanne";
         LatLng coords1 = getLatLng(adresse1);
         System.out.println("Lat/Lng de Adresse #1: " + coords1);
@@ -118,10 +119,10 @@ public class GeoTest {
 
         Double duree = getTripDurationByBicycleInMinute(coords1, coords3, coords2);
         System.out.println("Durée de Trajet à Vélo de Adresse #1 à Adresse #3 en passant par Adresse #2: " + duree + " min");
-
+        
         Double distance = getTripDistanceByCarInKm(coords1, coords3);
         System.out.println("Distance en Voiture de Adresse #1 à Adresse #3 (trajet direct par la route): " + distance + " km");
-
+        
         Double distanceVolDOiseau = getFlightDistanceInKm(coords1, coords3);
         System.out.println("Distance à Vol d'Oiseau de Adresse #1 à Adresse #3 (distance géographique): " + distanceVolDOiseau + " km");
     }

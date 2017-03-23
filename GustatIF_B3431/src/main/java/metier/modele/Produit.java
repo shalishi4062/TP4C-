@@ -10,11 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-/**
- *
- * @author B431
- */
-
 @Entity
 public class Produit implements Serializable {
     @Id

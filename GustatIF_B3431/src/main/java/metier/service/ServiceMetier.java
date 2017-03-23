@@ -29,10 +29,10 @@ import static util.GeoTest.getLatLng;
 
 /**
  *
- * @author B3431
+ * @author jcharlesni
  */
 public class ServiceMetier {
-    
+
     ClientDAO cdao = new ClientDAO();
     CommandeDAO codao = new CommandeDAO();
     LivreurDAO ldao = new LivreurDAO();
@@ -41,11 +41,11 @@ public class ServiceMetier {
     RestaurantDAO rdao = new RestaurantDAO();
     ServiceTechnique stechnique = new ServiceTechnique();
     Scanner clavier = new Scanner(System.in);
-    
-    public Client signUpClient(String nom, String prenom, String mail, String adresse) {
+
+    public Client signUpClient(Client cl) {
         JpaUtil.creerEntityManager();
-        LatLng latlong = getLatLng(adresse);
-        Client cl = new Client(nom, prenom, mail, adresse);
+        LatLng latlong = getLatLng(cl.getAdresse());
+
         try {
             JpaUtil.ouvrirTransaction();
             cdao.create(cl);
@@ -56,34 +56,26 @@ public class ServiceMetier {
             stechnique.envoiMailInscription(0, cl);
         }
         JpaUtil.fermerEntityManager();
-        
+
         return cl;
     }
-    
-    public Client singInClient(String mail){
+
+    public Client singInClient(String mail) {
         JpaUtil.creerEntityManager();
         ClientDAO cdao = new ClientDAO();
-        List<Client> clients = new ArrayList();
         Client cl = null;
         try {
-            clients = cdao.findAll(); 
+            cl = cdao.findClientByMail(mail);
         } catch (Exception ex) {
             Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
         }
-        for (int i = 0; i < clients.size(); i++) {
-		if(clients.get(i).getMail().equals(mail)){
-                    cl = clients.get(i);
-                    System.out.println("Bienvenue "+cl.getPrenom());
-                }
-        }
-        if(cl==null) System.out.println("Vous n'êtes pas encore inscrit!");
         JpaUtil.fermerEntityManager();
         return cl;
     }
-    
-    public void createCommande(Commande commande){
+
+    public void createCommande(Commande commande) {
         JpaUtil.creerEntityManager();
-        
+
         try {
             JpaUtil.ouvrirTransaction();
             codao.create(commande);
@@ -91,11 +83,11 @@ public class ServiceMetier {
         } catch (Exception ex) {
             Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         JpaUtil.fermerEntityManager();
     }
-    
-    public void createQteCommande(Qte_Commande qcommande){
+
+    public void createQteCommande(Qte_Commande qcommande) {
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         try {
@@ -106,37 +98,55 @@ public class ServiceMetier {
         JpaUtil.validerTransaction();
         JpaUtil.fermerEntityManager();
     }
-    
-    public void checkCommande(Commande commande, Restaurant restaurant){
-        
+
+    public void checkCommande(Commande commande, Restaurant restaurant) {
+
         Client client = commande.getClient();
+        boolean reussi = false;
         Livreur livreur = stechnique.selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
-       if (livreur != null){
-           commande.setLivreur(livreur);
-            System.out.println("Votre commande : \n"+commande.getProduitsCommande()+ "\n a été confirmée et créee.");
-            if(livreur.getDisponibilite()){
-                ValiderCommande(livreur);
-            } else {   
-                while(!livreur.getDisponibilite() && livreur !=null){
+        if (livreur != null) {
+            while (!reussi) {
+                commande.setLivreur(livreur);
+                commande.setEtat(1);
+                livreur.setDisponibilite(false);
+                try {
+                    stechnique.updateLivreur(livreur);
+                    stechnique.updateCommande(commande);
+                    reussi = true;
+                    
+                } catch (Exception ex) {
+                    reussi = false;
                     livreur = stechnique.selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
-                    commande.setLivreur(livreur);
+                    if(livreur == null){
+                        commande.setEtat(3);
+                        System.out.println("Aucun livreur disponible pour cette commande. Veuillez recommencer plus tard..)");
+                    }
                 }
-                ValiderCommande(livreur);
             }
-            if(livreur instanceof LivreurHumain) stechnique.envoiMailLivreur(livreur, commande, restaurant);
+            if (livreur instanceof LivreurHumain) {
+                stechnique.envoiMailLivreur(livreur, commande, restaurant);
+            }
+            System.out.println("Votre commande : \n" + commande.getProduitsCommande() + "\n a été confirmée et créee.");
             livreur.prendreCommande();
-            updateCommande(commande);
-       } else {
-           System.out.println("Veuillez entrer une nouvelle commande avec moins de produits");
-       }
+        } else {
+            System.out.println("Veuillez entrer une nouvelle commande avec moins de produits");
+        }
     }
-    
-    public void ValiderCommande(Livreur l){
+
+    /*public void validerCommande(Livreur l) throws Exception {
         l.setDisponibilite(false);
-        stechnique.updateLivreur(l);
+        try {
+            stechnique.updateLivreur(l);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }//elle sert*/
+    public void finirCommande(Commande commande) {
+        commande.getLivreur().finirCommande(commande);
+        stechnique.updateCommande(commande);
     }
-    
-    public List<Restaurant> getRestaurants(){
+
+    public List<Restaurant> getRestaurants() {
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         List<Restaurant> restaurants = new ArrayList();
@@ -150,7 +160,7 @@ public class ServiceMetier {
         return restaurants;
     }
 
-    public List<Client> getClients(){
+    public List<Client> getClients() {
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         List<Client> clients = new ArrayList();
@@ -163,8 +173,12 @@ public class ServiceMetier {
         JpaUtil.fermerEntityManager();
         return clients;
     }
-    
-    public List<Commande> getCommandes(){
+
+    public List<Livreur> getLivreurs() {
+        return stechnique.getLivreurs();
+    }
+
+    public List<Commande> getCommandes() {
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         List<Commande> commandes = new ArrayList();
@@ -177,28 +191,28 @@ public class ServiceMetier {
         JpaUtil.fermerEntityManager();
         return commandes;
     }
-    
-    public void createLivreurs (){
+
+    public void createLivreurs() {
         JpaUtil.creerEntityManager();
-        LivreurHumain h1 = new LivreurHumain("8 Rue Arago, Villeurbanne", 25852.0,
+        LivreurHumain h1 = new LivreurHumain("8 Rue Arago, Villeurbanne", 25000.0,
                 "Premier", "Fisrt", "premier@gustatif.fr");
-        LivreurHumain h2 = new LivreurHumain("80 Rue Léon Fabre, Villeurbanne", 18050.93,
+        LivreurHumain h2 = new LivreurHumain("80 Rue Léon Fabre, Villeurbanne", 23000.93,
                 "Deuxieme", "Second", "deuxieme@gustatif.fr");
-        LivreurHumain h3 = new LivreurHumain("8 Rue Wilhelmine, Villeurbanne", 20050.95,
+        LivreurHumain h3 = new LivreurHumain("8 Rue Wilhelmine, Villeurbanne", 20000.95,
                 "Troisieme", "Third", "troisieme@gustatif.fr");
-        LivreurHumain h4 = new LivreurHumain("9 Place de la Paix", 22540.79,
+        LivreurHumain h4 = new LivreurHumain("9 Place de la Paix", 18000.79,
                 "Quatrieme", "Forth", "quatrieme@gustatif.fr");
-        LivreurHumain h5 = new LivreurHumain("3 Allée Louis Pergaud", 26562.9,
+        LivreurHumain h5 = new LivreurHumain("3 Allée Louis Pergaud", 21500.9,
                 "Cinquieme", "Fifth", "cinquieme@gustatif.fr");
-        LivreurMachine m1 = new LivreurMachine("20 Rue des Peupliers, Villeurbanne", 2000.0,
-                "R1G1", 45.9);
+        LivreurMachine m1 = new LivreurMachine("20 Rue des Peupliers, Villeurbanne", 1500.0,
+                "R1G1", 55.9);
         LivreurMachine m2 = new LivreurMachine("7 Rue Pelisson, Villeurbanne", 2000.0,
-                "R2G2", 38.5);
-        LivreurMachine m3 = new LivreurMachine("16 Boulevard Niels Bohr, Villeurbanne", 2300.0,
-                "R3G3", 50.5);
-        LivreurMachine m4 = new LivreurMachine("11 Rue Mansard, Villeurbanne", 2200.0,
-                "R4G4", 20.5);
-        LivreurMachine m5 = new LivreurMachine("12 Rue Léon Piat, Villeurbanne", 1900.0,
+                "R2G2", 50.5);
+        LivreurMachine m3 = new LivreurMachine("16 Boulevard Niels Bohr, Villeurbanne", 2500.0,
+                "R3G3", 60.5);
+        LivreurMachine m4 = new LivreurMachine("11 Rue Mansard, Villeurbanne", 1700.0,
+                "R4G4", 80.5);
+        LivreurMachine m5 = new LivreurMachine("12 Rue Léon Piat, Villeurbanne", 2300.0,
                 "R5G5", 45.5);
         try {
             JpaUtil.ouvrirTransaction();
@@ -218,19 +232,5 @@ public class ServiceMetier {
         }
         JpaUtil.fermerEntityManager();
     }
-    
-    public void updateCommande(Commande commande){
-        JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
-        try {
-            codao.update(commande);
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        JpaUtil.validerTransaction();
-        JpaUtil.fermerEntityManager();
-    }
-    
-    
-    
+
 }

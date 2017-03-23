@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.RollbackException;
 import metier.modele.Client;
 import metier.modele.Commande;
 import metier.modele.Livreur;
@@ -26,7 +27,7 @@ import util.GeoTest;
 
 /**
  *
- * @author B3431
+ * @author jcharlesni
  */
 public class ServiceTechnique {
 
@@ -38,12 +39,25 @@ public class ServiceTechnique {
     RestaurantDAO rdao = new RestaurantDAO();
     Scanner clavier = new Scanner(System.in);
 
-    public void updateLivreur(Livreur livreur) {
+    public void updateLivreur(Livreur livreur) throws Exception {
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         try {
-            //Envoyer Mails
+            //Envoyer Mails??
             ldao.update(livreur);
+            JpaUtil.validerTransaction();
+        } catch (RollbackException ex) {
+            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
+        }
+        JpaUtil.fermerEntityManager();
+    }
+    
+    public void updateCommande(Commande commande) {
+        JpaUtil.creerEntityManager();
+        JpaUtil.ouvrirTransaction();
+        try {
+            codao.update(commande);
         } catch (Exception ex) {
             Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
         }
