@@ -107,9 +107,9 @@ public class Main {
 
         Integer i = null;
 
-        while (i == null) {
-            i = lireInteger("Voulez vous finir une commande d'un drone(1) ou voir la belle carte(2) ?", Arrays.asList(1, 2));
-        }
+        while (i == null || i!= 0) {
+            i = lireInteger("Voulez vous finir une commande d'un drone(1), voir la belle carte(2) ou quitter l'application(0) ?", Arrays.asList(0, 1, 2));
+        
 
         switch (i) {
             case 1:
@@ -170,6 +170,7 @@ public class Main {
                     }
                     break;
                 }
+        }
         }
     }
 
