@@ -191,17 +191,7 @@ public class ServiceMetier {
     }
     
     public List<Commande> getCommandesForLivreur(Livreur li) {
-        JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
-        List<Commande> commandes = new ArrayList();
-        try {
-            commandes = li.getCommandes();
-        } catch (Exception ex) {
-            Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        JpaUtil.validerTransaction();
-        JpaUtil.fermerEntityManager();
-        return commandes;
+        return li.getCommandes();
     }
 
     public void createLivreurs() {
