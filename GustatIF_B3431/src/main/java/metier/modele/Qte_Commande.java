@@ -6,6 +6,7 @@
 package metier.modele;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,7 +15,7 @@ import javax.persistence.ManyToOne;
 
 /**
  *
- * @author jcharlesni
+ * @author B431
  */
 
 @Entity
@@ -24,10 +25,7 @@ public class Qte_Commande implements Serializable {
     protected Long id;
     
     private int quantite;
-    
-    @ManyToOne
-    private Commande commande;
-    
+        
     @ManyToOne
     private Produit produit;
     
@@ -35,15 +33,11 @@ public class Qte_Commande implements Serializable {
         
     }
     
-    public Qte_Commande(Commande c, Produit p, int q){
-        commande = c;
+    public Qte_Commande(Produit p, int q){
         produit = p;
         quantite = q;
     }
-    
-    public Commande getCommande(){
-        return commande;
-    }
+   
     
     public Produit getProduit(){
         return produit;
@@ -51,10 +45,6 @@ public class Qte_Commande implements Serializable {
     
     public int getQuantite(){
         return quantite;
-    }
-    
-    public void setCommande(Commande c){
-        commande = c;
     }
     
     public void setProduit(Produit p){
@@ -67,6 +57,6 @@ public class Qte_Commande implements Serializable {
     
     @Override
     public String toString(){
-        return " Commande n° " + commande.getID()+" : "+ produit.getDenomination()+ " a été commandé pour une quantité de " + quantite; 
+        return  produit.getDenomination()+ " a été commandé pour une quantité de " + quantite; 
     }
 }

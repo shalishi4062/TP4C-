@@ -100,22 +100,20 @@ public class ServiceMetier {
     }
 
     public void checkCommande(Commande commande, Restaurant restaurant) {
-
         Client client = commande.getClient();
         boolean reussi = false;
         Livreur livreur = stechnique.selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
         if (livreur != null) {
             while (!reussi) {
                 commande.setLivreur(livreur);
-                commande.setEtat(1);
                 livreur.setDisponibilite(false);
+                commande.setEtat(1);
                 try {
                     stechnique.updateLivreur(livreur);
-                    stechnique.updateCommande(commande);
                     reussi = true;
-                    
                 } catch (Exception ex) {
                     reussi = false;
+                    livreur.setDisponibilite(true);
                     livreur = stechnique.selectNewLivreur(commande.getPoidsTotal(), client, restaurant);
                     if(livreur == null){
                         commande.setEtat(3);
@@ -123,6 +121,7 @@ public class ServiceMetier {
                     }
                 }
             }
+            createCommande(commande);
             if (livreur instanceof LivreurHumain) {
                 stechnique.envoiMailLivreur(livreur, commande, restaurant);
             }
@@ -141,21 +140,20 @@ public class ServiceMetier {
             throw ex;
         }
     }//elle sert*/
-    public void finirCommande(Commande commande) {
-        commande.getLivreur().finirCommande(commande);
+    public void finirCommande(Commande commande, Livreur livreur) {
+        //commande.getLivreur().finirCommande(commande);
+        livreur.finirCommande(commande);
         stechnique.updateCommande(commande);
     }
 
     public List<Restaurant> getRestaurants() {
         JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
         List<Restaurant> restaurants = new ArrayList();
         try {
             restaurants = rdao.findAll();
         } catch (Exception ex) {
             Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
         }
-        JpaUtil.validerTransaction();
         JpaUtil.fermerEntityManager();
         return restaurants;
     }

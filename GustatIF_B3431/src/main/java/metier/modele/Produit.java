@@ -10,6 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+/**
+ *
+ * @author B431
+ */
+
 @Entity
 public class Produit implements Serializable {
     @Id
@@ -20,10 +25,7 @@ public class Produit implements Serializable {
     private Double poids;
     private Double prix;
     
-    
-    
-    @OneToMany(mappedBy="produit")
-    List<Qte_Commande> qte_commandes;
+
 
     public Produit() {
     }
@@ -33,7 +35,6 @@ public class Produit implements Serializable {
         this.description = description;
         this.poids = poids;
         this.prix = prix;
-        qte_commandes = new ArrayList();
     }
 
     public Long getId() {
@@ -72,9 +73,6 @@ public class Produit implements Serializable {
         this.prix = prix;
     }
     
-    public void addQteCommande(Qte_Commande qC){
-        qte_commandes.add(qC);
-    }
 
     @Override
     public String toString() {

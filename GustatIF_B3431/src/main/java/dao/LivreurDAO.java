@@ -10,57 +10,61 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import metier.modele.Livreur;
 
+/**
+ *
+ * @author B431
+ */
 public class LivreurDAO {
-    
+
     public void create(Livreur livreur) throws Exception {
         EntityManager em = JpaUtil.obtenirEntityManager();
         try {
             em.persist(livreur);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             throw e;
         }
     }
-    
+
     public void update(Livreur livreur) throws Exception {
         EntityManager em = JpaUtil.obtenirEntityManager();
         try {
             em.merge(livreur);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             throw e;
         }
     }
-    
+
     public Livreur findById(long id) throws Exception {
         EntityManager em = JpaUtil.obtenirEntityManager();
         Livreur livreur = null;
         try {
             livreur = em.find(Livreur.class, id);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             throw e;
         }
         return livreur;
     }
-    
+
     public List<Livreur> findAll() throws Exception {
+        System.out.println("ISALOP 1");
         EntityManager em = JpaUtil.obtenirEntityManager();
+        System.out.println("ISALOP 2");
         List<Livreur> livreurs = null;
+        System.out.println("ISALOP 3");
         try {
             Query q = em.createQuery("SELECT c FROM Livreur c");
             livreurs = (List<Livreur>) q.getResultList();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             throw e;
         }
+        System.out.println("ISALOP 4");
         return livreurs;
     }
-    
+
     public void consultList() throws Exception {
         List<Livreur> livreurs = findAll();
         System.out.println("Liste des Livreurs : ");
-        for(int i=0; i<livreurs.size(); i++){
+        for (int i = 0; i < livreurs.size(); i++) {
             System.out.println(livreurs.get(i).toString());
         }
     }

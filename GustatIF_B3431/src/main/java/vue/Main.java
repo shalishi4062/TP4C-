@@ -90,7 +90,7 @@ public class Main {
                     f = lireInteger("Avez vous fini cette commande ? oui(1)\n" + coli, Arrays.asList(0, 1));
                 }
                 if (f == 1) {
-                    smetier.finirCommande(livreur.getCommandes().get(livreur.getCommandes().size() - 1));
+                    smetier.finirCommande(livreur.getCommandes().get(livreur.getCommandes().size() - 1), livreur);
                 }
             } else {
                 System.out.println("Vous n'avez aucune commande en cours...");
@@ -135,7 +135,7 @@ public class Main {
                             f = lireInteger("Avez vous fini cette commande ? oui(1)\n" + coli, Arrays.asList(0, 1));
                         }
                         if (f == 1) {
-                            smetier.finirCommande(livreur.getCommandes().get(livreur.getCommandes().size() - 1));
+                            smetier.finirCommande(livreur.getCommandes().get(livreur.getCommandes().size() - 1), livreur);
                         }
                     } else {
                         System.out.println("Vous n'avez aucune commande en cours...");
@@ -271,13 +271,14 @@ public class Main {
         Restaurant restaurant = selectRestaurant(restaurants);
         Date date = selectDate();
         Commande commande = new Commande(client, date, restaurant);
-        smetier.createCommande(commande);
+        //smetier.createCommande(commande);
         while (x != 0) {
             Qte_Commande qcommande = selectProduit(restaurant, commande);
             commande.addQteProduit(qcommande);
             x = lireInteger("Souhaitez vous un autre produit(1) ou ce sera tout(0) ? "
                     + "#Tapez le chiffre entre parenthèse lié à votre choix");
         }
+        System.out.println("Hello ! ");
         smetier.checkCommande(commande, restaurant);
     }
 
@@ -316,8 +317,8 @@ public class Main {
             p = lireInteger("Tapez le numero du produit que vous souhaitez.", l);
         }
         quantite = lireInteger("Quelle quantité ?");
-        Qte_Commande qcommande = new Qte_Commande(commande, produits.get(p - 1), quantite);
-        smetier.createQteCommande(qcommande);
+        Qte_Commande qcommande = new Qte_Commande( produits.get(p - 1), quantite);
+        //smetier.createQteCommande(qcommande);
         return qcommande;
     }
 

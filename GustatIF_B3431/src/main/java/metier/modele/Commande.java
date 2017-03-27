@@ -6,13 +6,18 @@
 package metier.modele;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -43,7 +48,7 @@ public class Commande implements Serializable{
     @ManyToOne
     private Restaurant restaurant;
     
-    @OneToMany(mappedBy="commande")
+    @OneToMany(cascade = CascadeType.ALL)
     List<Qte_Commande> qte_commande;
     
     private String etat;
@@ -64,7 +69,7 @@ public class Commande implements Serializable{
     public Commande(Client c, Date d, Restaurant r, Livreur l){
         dateDeb = d;
         client = c;
-        livreur = l;
+        //livreur = l;
         qte_commande = new ArrayList();
         etat = "En attente";
         dateFin = null;
@@ -104,7 +109,7 @@ public class Commande implements Serializable{
         return restaurant;
     }
     
-    public double getTimeLivraison(){
+    public double getTimeLivraison(Livreur livreur){
         double time = 0.0;
         if(livreur != null && livreur instanceof LivreurHumain){
             time = GeoTest.getTripDurationByBicycleInMinute(GeoTest.getLatLng(livreur.getAdresse()),GeoTest.getLatLng(client.getAdresse()), GeoTest.getLatLng(restaurant.getAdresse()));
@@ -123,8 +128,8 @@ public class Commande implements Serializable{
     }
     
     public void setLivreur(Livreur l){
+        System.out.println("Héhé");
         livreur = l;
-        livreur.addCommande(this);
     }
     
     public void setRestaurant(Restaurant r){
@@ -149,7 +154,7 @@ public class Commande implements Serializable{
                     break;
             case 3 : etat = "Annulée";
                     break;
-            default :
+            default : System.out.println("Entrez 0, 1, 2, ou 3");
                     break; 
         }
     }
@@ -178,7 +183,6 @@ public class Commande implements Serializable{
     }
     
     public String toString(){
-        return "Commande n°"+id+" du client "+ client.getId()+
-                " effectuée par le livreur "+ livreur.getId() + " le "+ dateDeb;
+        return "Commande n°"+id+" du client "+ client.getId()+ "effectuée le "+ dateDeb;
     }
 }

@@ -107,14 +107,14 @@ public class ServiceTechnique {
 
     public List<Livreur> getLivreurs() {
         JpaUtil.creerEntityManager();
-        JpaUtil.ouvrirTransaction();
+        //JpaUtil.ouvrirTransaction();
         List<Livreur> livreurs = new ArrayList();
         try {
             livreurs = ldao.findAll();
         } catch (Exception ex) {
             Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
         }
-        JpaUtil.validerTransaction();
+       // JpaUtil.validerTransaction();
         JpaUtil.fermerEntityManager();
         return livreurs;
     }

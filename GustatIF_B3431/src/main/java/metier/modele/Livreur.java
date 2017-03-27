@@ -104,7 +104,7 @@ public abstract class Livreur implements Serializable{
             if(commande.getEtat().equals("En attente") && disponibilite){
                commande.setEtat(1);
                disponibilite = false;
-               System.out.println("Votre commande a été livrée au bout de "+ commande.getTimeLivraison()+ " minutes.");
+               System.out.println("Votre commande a été livrée au bout de "+ commande.getTimeLivraison(this)+ " minutes.");
                finirCommande(commande);
             }
         }
@@ -116,11 +116,11 @@ public abstract class Livreur implements Serializable{
             if (commande.getEtat().equals("En cours") && disponibilite) {
                 //commande.setEtat(1);
                 //disponibilite = false;
-                System.out.println("Votre commande sera livrée au bout de " + commande.getTimeLivraison() + " minutes)");
-                if (commande.getTimeLivraison() < 3.0) {
+                System.out.println("Votre commande sera livrée au bout de " + commande.getTimeLivraison(this) + " minutes)");
+                if (commande.getTimeLivraison(this) < 3.0) {
                     System.out.println("Votre commande sera bientôt livrée...");
                     Date now = new Date();
-                    Date end = new Date((long) (now.getTime() + (commande.getTimeLivraison() * 60000 )));
+                    Date end = new Date((long) (now.getTime() + (commande.getTimeLivraison(this) * 60000 )));
                     while (now.before(end)) {
                       now = new Date();
                     }

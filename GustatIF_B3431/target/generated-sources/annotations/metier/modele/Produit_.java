@@ -1,22 +1,17 @@
 package metier.modele;
 
 import javax.annotation.Generated;
-import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
-import metier.modele.Qte_Commande;
-import metier.modele.Restaurant;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-03-08T18:00:01")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-03-27T16:32:58")
 @StaticMetamodel(Produit.class)
 public class Produit_ { 
 
-    public static volatile SingularAttribute<Produit, Long> id;
     public static volatile SingularAttribute<Produit, Double> prix;
-    public static volatile SingularAttribute<Produit, String> description;
-    public static volatile ListAttribute<Produit, Qte_Commande> qte_commandes;
     public static volatile SingularAttribute<Produit, Double> poids;
-    public static volatile SingularAttribute<Produit, Restaurant> restaurant;
+    public static volatile SingularAttribute<Produit, String> description;
+    public static volatile SingularAttribute<Produit, Long> id;
     public static volatile SingularAttribute<Produit, String> denomination;
 
 }
